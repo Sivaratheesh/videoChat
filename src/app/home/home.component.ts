@@ -20,8 +20,8 @@ export class HomeComponent implements OnInit {
   constructor( public videoseervice:VideoService) { }
 
   ngOnInit(): void {
-    this.cameraSrc = document.getElementById('video');
-    this.videoseervice.video =  this.cameraSrc
+    let cameraSrc = <HTMLVideoElement>document.querySelector('video');
+    this.videoseervice.video =  cameraSrc
     this.videoseervice.getvideo();
   }
 }
