@@ -25,7 +25,8 @@ export class HomeComponent implements OnInit {
     // this.videoseervice.video =  cameraSrc
     // this.videoseervice.getvideo();
     this.apiservice.getIssues().subscribe(data =>{
-      console.log(data)
+      console.log(data);
+      
     })
   }
 }
