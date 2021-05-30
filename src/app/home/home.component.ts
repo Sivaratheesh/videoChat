@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ApiserviceService } from '../apiservice.service';
 import { VideoService } from '../video.service';
 
 @Component({
@@ -17,11 +18,14 @@ export class HomeComponent implements OnInit {
   public photo :any;
   public startbutton = null;
 
-  constructor( public videoseervice:VideoService) { }
+  constructor( public videoseervice:VideoService,private apiservice:ApiserviceService) { }
 
   ngOnInit(): void {
-    let cameraSrc = <HTMLVideoElement>document.querySelector('video');
-    this.videoseervice.video =  cameraSrc
-    this.videoseervice.getvideo();
+    // let cameraSrc = <HTMLVideoElement>document.querySelector('video');
+    // this.videoseervice.video =  cameraSrc
+    // this.videoseervice.getvideo();
+    this.apiservice.getIssues().subscribe(data =>{
+      console.log(data)
+    })
   }
 }
