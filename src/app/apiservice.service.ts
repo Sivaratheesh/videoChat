@@ -15,7 +15,7 @@ export class ApiserviceService {
       mailID:'ratheesh93@gmail.com',
       mobilenumber:"8489782378"
     }
-    return this.http.post('api/user/register',obj);
+    return this.http.post('https://chatappapi3005.herokuapp.com/api/user/register',obj);
   }
 
 }
