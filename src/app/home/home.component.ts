@@ -30,6 +30,7 @@ export class HomeComponent implements OnInit {
     })
     this.apiservice.getuseer().subscribe((data:any) =>{
       console.log(data);
+      console.warn(data.responseText)
       
     })
   }
