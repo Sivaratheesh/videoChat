@@ -24,10 +24,10 @@ export class HomeComponent implements OnInit {
     // let cameraSrc = <HTMLVideoElement>document.querySelector('video');
     // this.videoseervice.video =  cameraSrc
     // this.videoseervice.getvideo();
-    this.apiservice.getIssues().subscribe(data =>{
-      console.log(data);
+    // this.apiservice.getIssues().subscribe(data =>{
+    //   console.log(data);
       
-    })
+    // })
     this.apiservice.getuseer().subscribe((data:any) =>{
       console.log(data);
       
