@@ -29,7 +29,7 @@ export class HomeComponent implements OnInit {
       
     })
     this.apiservice.getuseer().subscribe((data:any) =>{
-      console.log(data.value);
+      console.log(data);
       
     })
   }

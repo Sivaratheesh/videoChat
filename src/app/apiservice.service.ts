@@ -24,6 +24,6 @@ export class ApiserviceService {
       mailID:'ratheesh93@gmail.com',
       mobilenumber:"8489782378"
     }
-    return this.http.get('/api/user/');
+    return this.http.get('/api/user/',{responseType: 'text'});
   }
 }
