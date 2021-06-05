@@ -8,7 +8,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { VideoService } from './video.service';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ErrorInterceptor } from './error-interceptor.service';
 const routes: Routes = [
   {path:'',component:HomeComponent}];
 
@@ -24,7 +25,8 @@ const routes: Routes = [
     FormsModule,
     HttpClientModule
   ],
-  providers: [VideoService,ApiserviceService],
+  providers: [VideoService,ApiserviceService,
+  { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
