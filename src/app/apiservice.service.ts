@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -20,7 +20,7 @@ export class ApiserviceService{
       mailID:'ratheesh93@gmail.com',
       mobilenumber:"8489782378"
     }
-    return this.http.post('/api/user/register',obj);
+    return this.http.post('/api/user/register',obj,this.jwt());
   }
   getuseer() {
     let obj = {
@@ -29,9 +29,7 @@ export class ApiserviceService{
       mailID:'ratheesh93@gmail.com',
       mobilenumber:"8489782378"
     }
-    return this.http.get('/api/user/').pipe(
-      map((response:any)=>response.json())
-    );
+    return this.http.get('/api/user/',this.jwt())
   }
   // intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
   //   const clonedRequest = req.clone({
@@ -51,4 +49,13 @@ export class ApiserviceService{
   //         return Observable.throw(new HttpErrorResponse(parsedError));
   //     });
   //   }
+
+  public jwt(){
+    const headers = new HttpHeaders(
+      {
+        'Content-Type': 'application/json; charset=utf-8',
+        'Access-Control-Allow-Origin': '*'
+      });
+    return { headers: headers };
+  }
 }
