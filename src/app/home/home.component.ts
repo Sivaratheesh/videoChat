@@ -28,5 +28,9 @@ export class HomeComponent implements OnInit {
       console.log(data);
       
     })
+    this.apiservice.getuseer().subscribe(data =>{
+      console.log(data);
+      
+    })
   }
 }
