@@ -20,7 +20,7 @@ export class ApiserviceService{
       mailID:'ratheesh93@gmail.com',
       mobilenumber:"8489782378"
     }
-    return this.http.post('/api/user/register',obj,this.jwt());
+    return this.http.post('https://chatappapi3005.herokuapp.com/user/register',obj,this.jwt());
   }
   getuseer() {
     let obj = {
@@ -29,7 +29,7 @@ export class ApiserviceService{
       mailID:'ratheesh93@gmail.com',
       mobilenumber:"8489782378"
     }
-    return this.http.get('/api/user/',this.jwt())
+    return this.http.get('https://chatappapi3005.herokuapp.com/user/',this.jwt())
   }
   // intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
   //   const clonedRequest = req.clone({
