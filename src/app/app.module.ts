@@ -8,8 +8,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { VideoService } from './video.service';
+import { SocketService } from './socket.service';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ErrorInterceptor } from './error-interceptor.service';
+import { environment } from 'src/environments/environment';
+import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+
+const config: SocketIoConfig = { url: 'https://chatappapi3005.herokuapp.com/', options: {} };
+
 const routes: Routes = [
   {path:'',component:HomeComponent}];
 
@@ -23,9 +29,10 @@ const routes: Routes = [
     AppRoutingModule,
     RouterModule.forRoot(routes),
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    SocketIoModule.forRoot(config),
   ],
-  providers: [VideoService,ApiserviceService,
+  providers: [VideoService,ApiserviceService,SocketService,
   { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },],
   bootstrap: [AppComponent]
 })
