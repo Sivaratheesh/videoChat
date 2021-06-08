@@ -14,7 +14,7 @@ import { ErrorInterceptor } from './error-interceptor.service';
 import { environment } from 'src/environments/environment';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 
-const config: SocketIoConfig = { url: 'https://chatappapi3005.herokuapp.com/', options: {} };
+const config: SocketIoConfig = { url:environment.socketUrl, options: {} };
 
 const routes: Routes = [
   {path:'',component:HomeComponent}];

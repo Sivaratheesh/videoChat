@@ -6,11 +6,11 @@ import { Socket } from 'ngx-socket-io';
   providedIn: 'root'
 })
 export class SocketService {
-
+public connected = this.socket.fromEvent<any>('connected');
   constructor(private socket: Socket) { }
 
-  startListening(msg: string) {
-    this.socket.emit('start', msg);
+  startListening() {
+    this.socket.emit('connect');
 
   }
 }
