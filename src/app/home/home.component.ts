@@ -11,32 +11,39 @@ import { VideoService } from '../video.service';
 export class HomeComponent implements OnInit {
   public width = 320;    // We will scale the photo width to this
   public height = 0;     // This will be computed based on the input stream
-
   public streaming = false;
-
-  public cameraSrc:any;
-  public canvas:any;
-  public photo :any;
+  public cameraSrc: any;
+  public canvas: any;
+  public photo: any;
   public startbutton = null;
 
-  constructor( public videoseervice:VideoService,private apiservice:ApiserviceService,public socketservice:SocketService) { }
+  constructor(public videoseervice: VideoService, private apiservice: ApiserviceService, public socketservice: SocketService) { }
 
   ngOnInit(): void {
     // let cameraSrc = <HTMLVideoElement>document.querySelector('video');
     // this.videoseervice.video =  cameraSrc
     // this.videoseervice.getvideo();
-    this.apiservice.getIssues().subscribe(data =>{
+    // this.apiservice.getIssues().subscribe(data =>{
+    //   console.log(data);
+    //   // console.log(this.socketservice);
+
+    // })
+    this.apiservice.getuseer().subscribe((data: any) => {
       console.log(data);
-      // console.log(this.socketservice);
-      
-    })
-    this.apiservice.getuseer().subscribe((data:any) =>{
-      console.log(data);
-      
     });
+    // this.socketservice.startListening();
+    // this.socketservice.connected.subscribe(data => {
+    //   console.log(data);
+    // })
+    this.socketservice.connected.subscribe(data => {
+      console.log(data);
+    });
+  }
+  public connect() {
     this.socketservice.startListening();
     this.socketservice.connected.subscribe(data => {
       console.log(data);
-    })
+    });
   }
+
 }

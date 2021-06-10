@@ -9,27 +9,22 @@ import { map } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class ApiserviceService{
+export class ApiserviceService {
 
   constructor(private http: HttpClient) { }
 
   getIssues() {
     let obj = {
-      userName:'Sivaratheesh H',
-      password:"P@s5w0rd",
-      mailID:'ratheesh93@gmail.com',
-      mobilenumber:"8489782378"
+      userName: 'Sivaratheesh H',
+      password: "P@s5w0rd",
+      mailID: 'ratheesh93@gmail.com',
+      mobilenumber: "8489782378"
     }
-    return this.http.post('https://chatappapi3005.herokuapp.com/user/register',obj,this.jwt());
+    return this.http.post('https://chatappapi3005.herokuapp.com/user/register', obj, this.jwt());
   }
   getuseer() {
-    let obj = {
-      userName:'Sivaratheesh H',
-      password:"P@s5w0rd",
-      mailID:'ratheesh93@gmail.com',
-      mobilenumber:"8489782378"
-    }
-    return this.http.get('https://chatappapi3005.herokuapp.com/user/',this.jwt())
+
+    return this.http.get('https://chatappapi3005.herokuapp.com/user/', this.jwt())
   }
   // intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
   //   const clonedRequest = req.clone({
@@ -43,14 +38,14 @@ export class ApiserviceService{
   //       });
   //     }
   //   }))
-    
+
   //     .catch((error: HttpErrorResponse) => {
   //         const parsedError:any = Object.assign({}, error, { error: JSON.parse(error.error) });
   //         return Observable.throw(new HttpErrorResponse(parsedError));
   //     });
   //   }
 
-  public jwt(){
+  public jwt() {
     const headers = new HttpHeaders(
       {
         'Content-Type': 'application/json; charset=utf-8',

@@ -13,11 +13,12 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ErrorInterceptor } from './error-interceptor.service';
 import { environment } from 'src/environments/environment';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+import { SharedModule } from './shared/shared.module';
 
-const config: SocketIoConfig = { url:environment.socketUrl, options: {} };
+// const config: SocketIoConfig = { url:environment.socketUrl, options: { origin:'*', transport : ['websocket']} };
 
-const routes: Routes = [
-  {path:'',component:HomeComponent}];
+// const routes: Routes = [
+//   {path:'',component:HomeComponent}];
 
 @NgModule({
   declarations: [
@@ -27,13 +28,13 @@ const routes: Routes = [
   imports: [
     BrowserModule,
     AppRoutingModule,
-    RouterModule.forRoot(routes),
+
     FormsModule,
     HttpClientModule,
-    SocketIoModule.forRoot(config),
+    SharedModule,
+    // SocketIoModule.forRoot(config),
   ],
-  providers: [VideoService,ApiserviceService,SocketService,
-  { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },],
+  providers: [VideoService,ApiserviceService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
