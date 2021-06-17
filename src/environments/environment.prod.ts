@@ -1,5 +1,5 @@
 export const environment = {
-  production: true,
+  production: false,
   // Base_Url:'https://chatappapi3005.herokuapp.com/',
   socketUrl: 'https://chatappapi3005.herokuapp.com',
 

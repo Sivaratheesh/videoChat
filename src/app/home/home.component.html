@@ -1,18 +1,27 @@
 <div class="camera">
-    <video controls playsinline autoplay loop muted></video>
+    <!-- <video controls playsinline autoplay loop muted></video> -->
   </div>
 
 
-  <div *ngFor = "let msg of data">
-    <p>{{msg}}</p>
-  </div>
-
-<div>
-  <input id = "input" type="text"  [(ngModel)] = "localMsg">
+ 
+<div *ngIf = "attendee">
+  <label>offer</label>
+  <input [(ngModel)] = "acceptoffer" type="text">
+  <button (click)= "acceptOffer()">Accept Offer</button>
+</div>
+<div *ngIf ="admin">
+  <label>Answer</label>
+  <input [(ngModel)] = "acceptanswer" type="text">
+  <button (click)= "acceptAnswer()">Accept Answer</button>
 </div>
 
-
+<div *ngFor = "let msg of data">
+  <p>{{msg}}</p>
+</div>
 
 <div>
-  <button id = "btn"  >send</button>
+<input type="text" [(ngModel)] = "localMsg">
+</div>
+<div>
+  <button (click)="send_text()">send</button>
 </div>

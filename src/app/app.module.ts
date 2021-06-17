@@ -15,7 +15,7 @@ import { environment } from 'src/environments/environment';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { SharedModule } from './shared/shared.module';
 
-// const config: SocketIoConfig = { url:environment.socketUrl, options: { origin:'*', transport : ['websocket']} };
+const config: SocketIoConfig = { url:environment.socketUrl};
 
 // const routes: Routes = [
 //   {path:'',component:HomeComponent}];
@@ -31,9 +31,9 @@ import { SharedModule } from './shared/shared.module';
     FormsModule,
     HttpClientModule,
     SharedModule,
-    // SocketIoModule.forRoot(config),
+    SocketIoModule.forRoot(config),
   ],
-  providers: [VideoService,ApiserviceService],
+  providers: [VideoService,ApiserviceService,SocketService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
