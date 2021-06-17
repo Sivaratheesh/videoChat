@@ -1,13 +1,18 @@
 <div class="camera">
-    <video controls playsinline autoplay loop muted>></video>
-    <button id="startbutton">Take photo</button>
+    <video controls playsinline autoplay loop muted></video>
   </div>
 
-  <canvas id="canvas">
-</canvas>
-<div class="output">
-  <img id="photo" alt="The screen capture will appear in this box.">
-</div>
+
+  <div *ngFor = "let msg of data">
+    <p>{{msg}}</p>
+  </div>
+
 <div>
-  <button (click)="connect()">connect</button>
+  <input id = "input" type="text"  [(ngModel)] = "localMsg">
+</div>
+
+
+
+<div>
+  <button id = "btn"  >send</button>
 </div>
