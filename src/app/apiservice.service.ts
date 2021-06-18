@@ -49,7 +49,7 @@ export class ApiserviceService {
     const headers = new HttpHeaders(
       {
         'Content-Type': 'application/json; charset=utf-8',
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': 'https://webrtcthelearningapp.herokuapp.com'
       });
     return { headers: headers };
   }
