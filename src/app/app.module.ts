@@ -15,7 +15,7 @@ import { environment } from 'src/environments/environment';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { SharedModule } from './shared/shared.module';
 
-const config: SocketIoConfig = { url:window.location.origin,options:{}};
+const config: SocketIoConfig = { url:environment.socketUrl,options:{}};
 
 // const routes: Routes = [
 //   {path:'',component:HomeComponent}];
