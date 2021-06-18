@@ -21,7 +21,7 @@ export class HomeComponent implements OnInit {
   public sendChannel: any;
   public receiveChannel: any;
   public localMsg: any
-  public data: any[] = [];
+  public data: any= [];
   public person: any;
   public channel: any;
   public offer: any;
@@ -31,7 +31,17 @@ export class HomeComponent implements OnInit {
   public acceptoffer:any;
   public acceptanswer:any
 
-  constructor(public socketservice: SocketService) { }
+  constructor(public socketservice :SocketService, public apiservice:ApiserviceService ) {
+
+    if(localStorage.getItem('data')){
+      this.data = sessionStorage.getItem('data') ;
+
+    }
+    this.socketservice.receiveMessage.subscribe(data =>{
+      this.data.push(data);
+      sessionStorage.setItem('data',JSON.stringify (this.data));
+    })
+   }
 
   ngOnInit(): void {
     this.person = prompt("Please enter your name", " ");
@@ -41,20 +51,19 @@ export class HomeComponent implements OnInit {
     } else {
       this.attendee = true;
     }
-    if (this.person != '') {
-      this.createConnection();
-    }
+    this.createConnection();
+  
     // let cameraSrc = <HTMLVideoElement>document.querySelector('video');
     // this.videoseervice.video =  cameraSrc
     // this.videoseervice.getvideo();
-    // this.apiservice.getIssues().subscribe(data =>{
-    //   console.log(data);
-    //   // console.log(this.socketservice);
+    this.apiservice.getIssues().subscribe(data =>{
+      console.log(data);
+      // console.log(this.socketservice);
 
-    // })
-    // this.apiservice.getuseer().subscribe((data: any) => {
-    //   console.log(data);
-    // });
+    })
+    this.apiservice.getuseer().subscribe((data: any) => {
+      console.log(data);
+    });
     // this.socketservice.startListening();
     // this.socketservice.connected.subscribe(data => {
     //   console.log(data);
@@ -71,60 +80,56 @@ export class HomeComponent implements OnInit {
   }
 
   public createConnection() {
-    const dataChannelOptions = {
-      ordered: false, // do not guarantee order
-      maxPacketLifeTime: 3000, // in milliseconds
-    };
+    
+    // const dataChannelOptions = {
+    //   ordered: false, // do not guarantee order
+    //   maxPacketLifeTime: 3000, // in milliseconds
+    // };
 
-    const servers: any = null;
+    // const servers: any = null;
     this.localConnection = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
     console.log('Created local peer connection object localConnection');
     this.localConnection.ondatachannel = (event: any) => {
       console.log('ondatachannel');
       this.channel = event.channel;
       console.log(this.channel);
-      this.data.push(event.data);
+      // this.data.push(event.data);
+      this.remoteConnection = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+      console.log('Created remote peer connection object remoteConnection');
+      if (this.remoteConnection.onicecandidate) {
+        this.remoteConnection.onicecandidate((e: any) => {
+          this.onIceCandidate(this.remoteConnection, e);
+          // this.remoteConnection.ondatachannel = this.receiveChannelCallback(e);
+        });
+  
+        // this.remoteConnection.onicecandidate = (e: any) => {
+        //   this.onIceCandidate(this.remoteConnection, e);
+        // };
+        this.remoteConnection.ondatachannel = (event: any) => {this.receiveChannelCallback(event)}
+      }
     }
     this.localConnection.onconnectionstatechange = (event: any) => console.log(this.localConnection.connectionState) // console.log('onconnectionstatechange', connection.connectionState)
     this.localConnection.oniceconnectionstatechange = (event: any) => console.log(this.localConnection.iceConnectionState) // console.log('oniceconnectionstatechange', connection.iceConnectionState)
 
     if (this.person === 'siva') {
       this.createOffer1();
-    } 
-
-    this.sendChannel = this.localConnection.createDataChannel('sendDataChannel', dataChannelOptions);
-    console.log('Created send data channel');
-    if (this.localConnection.onicecandidate) {
-      this.localConnection.onicecandidate((e: any) => {
-        this.onIceCandidate(this.localConnection, e);
-      });
-      // this.localConnection.onicecandidate = (e: any) => {
-      //   this.onIceCandidate(this.localConnection, e);
+      // this.sendChannel = this.localConnection.createDataChannel('sendDataChannel');
+      console.log('Created send data channel');
+      if (this.localConnection.onicecandidate) {
+        // this.localConnection.onicecandidate((e: any) => {
+        //   this.onIceCandidate(this.localConnection, e);
+        // });
+        this.localConnection.onicecandidate = (e: any) => {
+          this.onIceCandidate(this.localConnection, e);
+        };
+      }
+      // this.sendChannel.onmessage = (event: any) => {
+      //   console.log("Got Data Channel Message:", event.data);
       // };
-    }
-    this.sendChannel.onmessage = (event: any) => {
-      console.log("Got Data Channel Message:", event.data);
-    };
-    if(this.sendChannel){
-    this.sendChannel.onopen = this.onSendChannelStateChange();
-    this.sendChannel.onclose = this.onSendChannelStateChange();
-    }
-
-
-    this.remoteConnection = new RTCPeerConnection(servers);
-    console.log('Created remote peer connection object remoteConnection');
-    if (this.remoteConnection.onicecandidate) {
-      this.remoteConnection.onicecandidate((e: any) => {
-        this.onIceCandidate(this.remoteConnection, e);
-        this.remoteConnection.ondatachannel = this.receiveChannelCallback(e);
-      });
-
-      // this.remoteConnection.onicecandidate = (e: any) => {
-      //   this.onIceCandidate(this.remoteConnection, e);
-      // };
-      // this.remoteConnection.ondatachannel = this.receiveChannelCallback;
-    }
-
+      if(this.sendChannel){
+      // this.sendChannel.onopen = this.onSendChannelStateChange();
+      // this.sendChannel.onclose = this.onSendChannelStateChange();
+      }
       this.localConnection.createOffer().then( (e:any) =>{
         this.gotDescription1(e)
       }
@@ -133,6 +138,12 @@ export class HomeComponent implements OnInit {
       this.onCreateSessionDescriptionError(error);
 
     };
+    }else{
+  
+   
+    }
+ 
+ 
     // console.log(this.localConnection);
     // this.localConnection.createOffer().then((e: any) => {
     //   this.gotDescription1(e)
@@ -140,17 +151,16 @@ export class HomeComponent implements OnInit {
     // }
     //   // this.onCreateSessionDescriptionError
     // );
-if(this.answer && this.person == 'siva'){
-  this.acceptAnswer();
-}
+// if(this.answer && this.person == 'siva'){
+//   this.acceptAnswer();
+// }
   }
   public gotDescription1(desc: any) {
-    console.log(this.localConnection);
 
     if (this.localConnection) {
       this.localConnection.setLocalDescription(desc);
       
-      console.log(`Offer from localConnection\n${JSON.stringify(desc)}`);
+      console.log(`Offer from localConnection\n${JSON.stringify(this.localConnection.localDescription)}`);
     }
 
     this.remoteConnection.setRemoteDescription(desc);
@@ -173,20 +183,25 @@ if(this.answer && this.person == 'siva'){
   }
   public gotDescription2(desc: any) {
     this.remoteConnection.setLocalDescription(desc);
-    console.log(`Answer from remoteConnection\n${JSON.stringify(desc)}`);
+    console.log(`Answer from remoteConnection\n${JSON.stringify(this.remoteConnection.localDescription)}`);
     this.localConnection.setRemoteDescription(desc);
   }
   public onIceCandidate(pc: any, event: any) {
     this.getOtherPc(pc)
       .addIceCandidate(event.candidate)
-      .then(
-        this.onAddIceCandidateSuccess,
-        this.onAddIceCandidateError
-      );
+      .then( (e:any) =>{
+        this.onAddIceCandidateSuccess
+      }
+      ),
+     ( error:any) =>{
+      this.onAddIceCandidateError
+     };
     console.log(`${this.getName(pc)} ICE candidate: ${event.candidate ? event.candidate.candidate : '(null)'}`);
   }
 
   public getOtherPc(pc: any) {
+    console.log(pc);
+    console.log(this.localConnection);
     return (pc === this.localConnection) ? this.remoteConnection : this.localConnection;
   }
   public onAddIceCandidateSuccess() {
@@ -202,9 +217,9 @@ if(this.answer && this.person == 'siva'){
   public receiveChannelCallback(event: any) {
     console.log('Receive Channel Callback');
     this.receiveChannel = event.channel;
-    this.receiveChannel.onmessage = this.onReceiveMessageCallback(event);
-    this.receiveChannel.onopen = this.onReceiveChannelStateChange();
-    this.receiveChannel.onclose = this.onReceiveChannelStateChange();
+    this.receiveChannel.onmessage  = (eve:any) => this.onReceiveMessageCallback(eve);
+    // this.receiveChannel.onopen = this.onReceiveChannelStateChange();
+    // this.receiveChannel.onclose = this.onReceiveChannelStateChange();
   }
   public onReceiveMessageCallback(event: any) {
     console.log('Received Message');
@@ -226,13 +241,21 @@ if(this.answer && this.person == 'siva'){
     this.localMsg = '';
   }
   public async createOffer1() {
-    this.channel = this.localConnection.createDataChannel('data');
-    this.channel.onmessage = (event: any) => alert(event.data);
+    this.sendChannel = this.localConnection.createDataChannel('sendDataChannel');
+    this.sendChannel.onmessage = (event: any) => {
+      this.data.push(event.data);
+      console.log("Got Data Channel Message:", event.data);
+    };
+    // this.channel = this.localConnection.createDataChannel('data');
+    // this.channel.onmessage = (event: any) => {
+    //   // alert(event.data)
+    //   this.data.push(event.data); 
+    // };
     this.localConnection.onicecandidate = (event: any) => {
       // console.log('onicecandidate', event)
       if (!event.candidate) {
-        this.offer = JSON.stringify (this.localConnection.localDescription);
-        console.log( this.offer);
+        this.offer = this.localConnection.localDescription;
+        console.log( JSON.stringify(this.offer));
       }
     }
 
@@ -242,29 +265,46 @@ if(this.answer && this.person == 'siva'){
   public async acceptOffer() {
     let data = JSON.parse(this.acceptoffer)
    await this.localConnection.setRemoteDescription(data);
-   this.createAnswer();
+    this.createAnswer();
+  
+
   }
   public async createAnswer() {
-    // this.channel = this.localConnection.createDataChannel('data');
     // this.channel.onmessage = (event: any) => alert(event.data);
     this.localConnection.onicecandidate = (event: any) => {
       // console.log('onicecandidate', event)
       if (!event.candidate) {
-        this.answer = JSON.stringify (this.localConnection.localDescription);
-        console.log(this.answer);
+        this.answer = this.localConnection.localDescription;
+        console.log(JSON.stringify (this.answer));
       }
     }
 
     const answer = this.localConnection.createAnswer()
- await this.localConnection.setLocalDescription(answer)
-
+  await this.localConnection.setLocalDescription(answer);
+  if(!this.channel){
+    this.sendChannel = this.localConnection.createDataChannel('sendDataChannel');
+    this.sendChannel.onmessage = (event: any) => {
+      this.data.push(event.data);
+      console.log("Got Data Channel Message:", event.data);
+    };
+      
   }
-  public async  acceptAnswer(){
+  }
+  public async acceptAnswer(){
     let data = JSON.parse(this.acceptanswer)
     await this.localConnection.setRemoteDescription(data);
   }
   public send_text() {
     const text = this.localMsg
     this.channel.send(text);
+    this.localMsg = '';
+}
+
+public sendMessage(){
+  this.socketservice.sendMessage(this.localMsg);
+  this.data.push(this.localMsg);
+  this.localMsg = '';
+
+
 }
 }

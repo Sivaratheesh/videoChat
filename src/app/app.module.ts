@@ -15,7 +15,7 @@ import { environment } from 'src/environments/environment';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { SharedModule } from './shared/shared.module';
 
-const config: SocketIoConfig = { url:environment.socketUrl};
+const config: SocketIoConfig = { url:environment.socketUrl,options:{}};
 
 // const routes: Routes = [
 //   {path:'',component:HomeComponent}];
@@ -33,7 +33,7 @@ const config: SocketIoConfig = { url:environment.socketUrl};
     SharedModule,
     SocketIoModule.forRoot(config),
   ],
-  providers: [VideoService,ApiserviceService,SocketService],
+  providers: [VideoService,ApiserviceService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
