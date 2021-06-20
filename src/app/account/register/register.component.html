@@ -1,0 +1,76 @@
+<div class="container-fluid">
+
+    <div class="row align-items-center">
+
+        <div class="col">
+
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="fonts">
+                    Sign Up
+                </div>
+                <form [formGroup]="registerForm" (ngSubmit)="register()">
+                    <div class="login-content">
+                        <div>Name <span class="asterisk">*</span> <span>
+                                <input autocomplete="Off" formControlName="name" class="form-control" type="text" autofocus
+                                    placeholder="Enter name" [ngClass]="{ 'is-invalid': submitted && f.name.errors }">
+                            </span>
+                        </div>
+                        <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+                            <div *ngIf="f.name.errors.required">Name is required</div>
+                        </div>
+                    </div>
+                    <div class="password-content">
+                        <div>Email address <span class="asterisk">*</span><span>
+                                <input autocomplete="Off" type="email" placeholder="Enter email id" formControlName="email"
+                                    class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }">
+                            </span>
+                        </div>
+                        <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                            <div *ngIf="f.email.errors.required">Email is required</div>
+                            <div *ngIf="f.email.errors.pattern">Email must be a valid email address</div>
+                        </div>
+                    </div>
+                    <div class="password-content">
+                        <div>Password <span class="asterisk">*</span><span>
+                                <input autocomplete="Off" type="password" placeholder="Enter password" formControlName="password"
+                                    class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }">
+                            </span>
+                        </div>
+                        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                            <div *ngIf="f.password.errors.required">Password is required</div>
+                            <div *ngIf="f.password.errors.minlength">Password must be at least 8 characters</div>
+                            <div *ngIf="f.password.errors.pattern && !f.password.errors.minlength"> Use 8 or more characters with a mix of letters,
+                                upper, lower,
+                                numbers & symbols
+                            </div>
+                        </div>
+                    </div>
+                    <div class="password-content">
+                        <div>Confirm password <span class="asterisk">*</span><span>
+                                <input autocomplete="Off" type="password" placeholder="Enter confirm password"
+                                    formControlName="confirmPassword" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }">
+                            </span>
+                        </div>
+                        <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
+                            <div *ngIf="f.confirmPassword.errors.required">Confirm password is required</div>
+                            <div *ngIf="f.confirmPassword.errors.passwordmismatch">Password and confirm password mismatch</div>
+                        </div>
+                    </div>
+                    <div class="login-btn">
+                        <button class="btn">Sign up</button>
+                    </div>
+                </form>
+                <div class="register-link">
+                    Already have an account? <a routerLink="/">Login here!</a>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+
+        </div>
+
+    </div>
+</div>

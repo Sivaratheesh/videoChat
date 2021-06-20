@@ -13,18 +13,12 @@ export class ApiserviceService {
 
   constructor(private http: HttpClient) { }
 
-  getIssues() {
-    let obj = {
-      userName: 'Sivaratheesh H',
-      password: "P@s5w0rd",
-      mailID: 'ratheesh93@gmail.com',
-      mobilenumber: "8489782378"
+  insertUser(data: any) {
+    return this.http.post('https://chatappapi3005.herokuapp.com/user/register', data, this.jwt());
     }
-    return this.http.post('https://chatappapi3005.herokuapp.com/user/register', obj, this.jwt());
-  }
-  getuseer() {
+  getuser(data: any) {
 
-    return this.http.get('https://chatappapi3005.herokuapp.com/user/', this.jwt())
+    return this.http.post('https://chatappapi3005.herokuapp.com/user/', data, this.jwt())
   }
   // intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
   //   const clonedRequest = req.clone({

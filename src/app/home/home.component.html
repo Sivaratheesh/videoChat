@@ -4,7 +4,7 @@
 
 
  
-<!-- <div *ngIf = "attendee">
+<div *ngIf = "attendee">
   <label>offer</label>
   <input [(ngModel)] = "acceptoffer" type="text">
   <button (click)= "acceptOffer()">Accept Offer</button>
@@ -13,7 +13,7 @@
   <label>Answer</label>
   <input [(ngModel)] = "acceptanswer" type="text">
   <button (click)= "acceptAnswer()">Accept Answer</button>
-</div> -->
+</div>
 
 <div *ngFor = "let msg of data">
   <p>{{msg}}</p>
@@ -24,8 +24,8 @@
 </div>
 <div>
   <button (click)="sendMessage()">send</button>
-  <!-- <button (click)="send_text()">send</button>
-  <button (click)="sendData()">remote</button>
-  <button (click)="connect()">remote</button> -->
+  <button (click)="send_text()">rtc</button>
+  <!-- <button (click)="sendData()">remote</button> -->
+  <!-- <button (click)="connect()">remote</button> -->
 
 </div>

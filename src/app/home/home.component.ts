@@ -56,14 +56,14 @@ export class HomeComponent implements OnInit {
     // let cameraSrc = <HTMLVideoElement>document.querySelector('video');
     // this.videoseervice.video =  cameraSrc
     // this.videoseervice.getvideo();
-    this.apiservice.getIssues().subscribe(data =>{
-      console.log(data);
-      // console.log(this.socketservice);
+    // this.apiservice.getIssues().subscribe(data =>{
+    //   console.log(data);
+    //   // console.log(this.socketservice);
 
-    })
-    this.apiservice.getuseer().subscribe((data: any) => {
-      console.log(data);
-    });
+    // })
+    // this.apiservice.getuseer().subscribe((data: any) => {
+    //   console.log(data);
+    // });
     // this.socketservice.startListening();
     // this.socketservice.connected.subscribe(data => {
     //   console.log(data);
@@ -96,17 +96,17 @@ export class HomeComponent implements OnInit {
       // this.data.push(event.data);
       this.remoteConnection = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
       console.log('Created remote peer connection object remoteConnection');
-      if (this.remoteConnection.onicecandidate) {
-        this.remoteConnection.onicecandidate((e: any) => {
-          this.onIceCandidate(this.remoteConnection, e);
-          // this.remoteConnection.ondatachannel = this.receiveChannelCallback(e);
-        });
+      // if (this.remoteConnection.onicecandidate) {
+      //   this.remoteConnection.onicecandidate((e: any) => {
+      //     this.onIceCandidate(this.remoteConnection, e);
+      //     // this.remoteConnection.ondatachannel = this.receiveChannelCallback(e);
+      //   });
   
-        // this.remoteConnection.onicecandidate = (e: any) => {
-        //   this.onIceCandidate(this.remoteConnection, e);
-        // };
-        this.remoteConnection.ondatachannel = (event: any) => {this.receiveChannelCallback(event)}
-      }
+      //   // this.remoteConnection.onicecandidate = (e: any) => {
+      //   //   this.onIceCandidate(this.remoteConnection, e);
+      //   // };
+      //   // this.remoteConnection.ondatachannel = (event: any) => {this.receiveChannelCallback(event)}
+      // }
     }
     this.localConnection.onconnectionstatechange = (event: any) => console.log(this.localConnection.connectionState) // console.log('onconnectionstatechange', connection.connectionState)
     this.localConnection.oniceconnectionstatechange = (event: any) => console.log(this.localConnection.iceConnectionState) // console.log('oniceconnectionstatechange', connection.iceConnectionState)
@@ -119,25 +119,25 @@ export class HomeComponent implements OnInit {
         // this.localConnection.onicecandidate((e: any) => {
         //   this.onIceCandidate(this.localConnection, e);
         // });
-        this.localConnection.onicecandidate = (e: any) => {
-          this.onIceCandidate(this.localConnection, e);
-        };
+        // this.localConnection.onicecandidate = (e: any) => {
+        //   this.onIceCandidate(this.localConnection, e);
+        // };
       }
       // this.sendChannel.onmessage = (event: any) => {
       //   console.log("Got Data Channel Message:", event.data);
       // };
-      if(this.sendChannel){
-      // this.sendChannel.onopen = this.onSendChannelStateChange();
-      // this.sendChannel.onclose = this.onSendChannelStateChange();
-      }
-      this.localConnection.createOffer().then( (e:any) =>{
-        this.gotDescription1(e)
-      }
+    //   if(this.sendChannel){
+    //   // this.sendChannel.onopen = this.onSendChannelStateChange();
+    //   // this.sendChannel.onclose = this.onSendChannelStateChange();
+    //   }
+    //   this.localConnection.createOffer().then( (e:any) =>{
+    //     this.gotDescription1(e)
+    //   }
 
-    ),(error:any) =>{
-      this.onCreateSessionDescriptionError(error);
+    // ),(error:any) =>{
+    //   this.onCreateSessionDescriptionError(error);
 
-    };
+    // };
     }else{
   
    
@@ -155,21 +155,23 @@ export class HomeComponent implements OnInit {
 //   this.acceptAnswer();
 // }
   }
-  public gotDescription1(desc: any) {
+  // public gotDescription1(desc: any) {
 
-    if (this.localConnection) {
-      this.localConnection.setLocalDescription(desc);
+  //   if (this.localConnection) {
+  //     this.localConnection.setLocalDescription(desc);
       
-      console.log(`Offer from localConnection\n${JSON.stringify(this.localConnection.localDescription)}`);
-    }
-
-    this.remoteConnection.setRemoteDescription(desc);
-    this.remoteConnection.createAnswer().then( (e:any) => {
-     this.gotDescription2(e);
-    }
-    ),(error:any) =>{
-      this.onCreateSessionDescriptionError(error);
-    };
+  //     console.log(`Offer from localConnection\n${JSON.stringify(this.localConnection.localDescription)}`);
+  //   }
+// if(this.remoteConnection){
+//   this.remoteConnection.setRemoteDescription(desc);
+//   this.remoteConnection.createAnswer().then( (e:any) => {
+//    this.gotDescription2(e);
+//   }
+//   ),(error:any) =>{
+//     this.onCreateSessionDescriptionError(error);
+//   };
+// }
+   
 
     // this.remoteConnection.createAnswer().then((e: any) => {
     //   this.gotDescription2(e)
@@ -177,7 +179,7 @@ export class HomeComponent implements OnInit {
     // }
     //   // this.onCreateSessionDescriptionError
     // );
-  }
+  // }
   public onCreateSessionDescriptionError(error: any) {
     console.log('Failed to create session description: ' + error.toString());
   }
@@ -186,18 +188,18 @@ export class HomeComponent implements OnInit {
     console.log(`Answer from remoteConnection\n${JSON.stringify(this.remoteConnection.localDescription)}`);
     this.localConnection.setRemoteDescription(desc);
   }
-  public onIceCandidate(pc: any, event: any) {
-    this.getOtherPc(pc)
-      .addIceCandidate(event.candidate)
-      .then( (e:any) =>{
-        this.onAddIceCandidateSuccess
-      }
-      ),
-     ( error:any) =>{
-      this.onAddIceCandidateError
-     };
-    console.log(`${this.getName(pc)} ICE candidate: ${event.candidate ? event.candidate.candidate : '(null)'}`);
-  }
+  // public onIceCandidate(pc: any, event: any) {
+  //   this.getOtherPc(pc)
+  //     .addIceCandidate(event.candidate)
+  //     .then( (e:any) =>{
+  //       this.onAddIceCandidateSuccess
+  //     }
+  //     ),
+  //    ( error:any) =>{
+  //     this.onAddIceCandidateError
+  //    };
+  //   console.log(`${this.getName(pc)} ICE candidate: ${event.candidate ? event.candidate.candidate : '(null)'}`);
+  // }
 
   public getOtherPc(pc: any) {
     console.log(pc);
@@ -214,32 +216,32 @@ export class HomeComponent implements OnInit {
   public getName(pc: any) {
     return (pc === this.localConnection) ? 'localPeerConnection' : 'remotePeerConnection';
   }
-  public receiveChannelCallback(event: any) {
-    console.log('Receive Channel Callback');
-    this.receiveChannel = event.channel;
-    this.receiveChannel.onmessage  = (eve:any) => this.onReceiveMessageCallback(eve);
-    // this.receiveChannel.onopen = this.onReceiveChannelStateChange();
-    // this.receiveChannel.onclose = this.onReceiveChannelStateChange();
-  }
-  public onReceiveMessageCallback(event: any) {
-    console.log('Received Message');
-    this.data.push(event.data);
-  }
-  public onReceiveChannelStateChange() {
-    const readyState = this.receiveChannel.readyState;
-    console.log(`Receive channel state is: ${readyState}`);
-  }
-  public onSendChannelStateChange() {
-    const readyState = this.sendChannel.readyState;
-    console.log('Send channel state is: ' + readyState);
-  }
-  public sendData() {
-    const data = this.localMsg;
-    this.data.push(data)
-    this.sendChannel.send(data);
-    console.log('Sent Data: ' + data);
-    this.localMsg = '';
-  }
+  // public receiveChannelCallback(event: any) {
+  //   console.log('Receive Channel Callback');
+  //   this.receiveChannel = event.channel;
+  //   this.receiveChannel.onmessage  = (eve:any) => this.onReceiveMessageCallback(eve);
+  //   // this.receiveChannel.onopen = this.onReceiveChannelStateChange();
+  //   // this.receiveChannel.onclose = this.onReceiveChannelStateChange();
+  // }
+  // public onReceiveMessageCallback(event: any) {
+  //   console.log('Received Message');
+  //   this.data.push(event.data);
+  // }
+  // public onReceiveChannelStateChange() {
+  //   const readyState = this.receiveChannel.readyState;
+  //   console.log(`Receive channel state is: ${readyState}`);
+  // }
+  // public onSendChannelStateChange() {
+  //   const readyState = this.sendChannel.readyState;
+  //   console.log('Send channel state is: ' + readyState);
+  // }
+  // public sendData() {
+  //   const data = this.localMsg;
+  //   this.data.push(data)
+  //   this.sendChannel.send(data);
+  //   console.log('Sent Data: ' + data);
+  //   this.localMsg = '';
+  // }
   public async createOffer1() {
     this.sendChannel = this.localConnection.createDataChannel('sendDataChannel');
     this.sendChannel.onmessage = (event: any) => {
@@ -258,7 +260,6 @@ export class HomeComponent implements OnInit {
         console.log( JSON.stringify(this.offer));
       }
     }
-
     const offer = this.localConnection.createOffer();
     await this.localConnection.setLocalDescription(offer);
   }
