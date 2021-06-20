@@ -1,51 +1,59 @@
 <div class="container-fluid">
 
     <div class="row align-items-center">
-        
+
         <div class="col">
-            
+
         </div>
         <div class="col">
             <div class="card">
                 <div class="fonts">
                     Login
                 </div>
+                <div class="invalid-user" *ngIf="invalidUser">
+                    Invalid User...!
+                </div>
+                <div class="invalid-user" *ngIf="incorrectPassword">
+                    Incorrect password...!
+                </div>
                 <form [formGroup]="loginForm" (ngSubmit)="login()">
-                <div class="login-content">
-                   <div>Email address<span class="asterisk">*</span><span>
-                    <input autocomplete="Off" type="email" placeholder="Enter email id" formControlName="email"
-                    class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }">
-                </span>
-                <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
-                    <div *ngIf="f.email.errors.required">Email is required</div>
-                    <div *ngIf="f.email.errors.pattern">Email must be a valid email address</div>
-                </div>
-            </div> 
-                   
-                </div>
-                <div class="password-content">
-                   <div>Password<span class="asterisk">*</span><span>
-                    <input autocomplete="Off" type="password" placeholder="Enter password" formControlName="password"
-                                    class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }">
-                </span>
-                <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-                    <div *ngIf="f.password.errors.required">Password is required</div>
-                </div>
-            </div> 
-                   
-                </div>
-                <div class="login-btn">
-                    <button class="btn">Login</button>
-                </div>
-            </form>
+                    <div class="login-content">
+                        <div>Email address<span class="asterisk">*</span><span>
+                                <input autocomplete="Off" type="email" placeholder="Enter email id"
+                                    formControlName="email" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && f.email.errors }">
+                            </span>
+                            <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                                <div *ngIf="f.email.errors.required">Email is required</div>
+                                <div *ngIf="f.email.errors.pattern">Email must be a valid email address</div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="password-content">
+                        <div>Password<span class="asterisk">*</span><span>
+                                <input autocomplete="Off" type="password" placeholder="Enter password"
+                                    formControlName="password" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && f.password.errors }">
+                            </span>
+                            <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                                <div *ngIf="f.password.errors.required">Password is required</div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="login-btn">
+                        <button class="btn">Login</button>
+                    </div>
+                </form>
                 <div class="register-link">
                     Don't have an account? <a routerLink="/register">Sign up here!</a>
                 </div>
             </div>
         </div>
         <div class="col">
-            
+
         </div>
 
-</div>
+    </div>
 </div>

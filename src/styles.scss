@@ -1,15 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
-@import url('https://fonts.googleapis.com/css2?family=Oxygen&display=swap');
+// @import url('https://fonts.googleapis.com/css2?family=Oxygen&display=swap');
 
 .fonts {
-    font-family: 'Roboto', sans-serif;
+    font: normal normal Open Sans !important;
     font-size: 30px;
-    color: rgb(0, 47, 255);
+    color: #a75959;
 }
 body {
     background-image: url('assets/website-background-png-5.png');
 
 }
+body::-webkit-scrollbar {
+    width: 10px !important;               /* width of the entire scrollbar */
+  }
 
 .container-fluid{
     // height: 700px;
@@ -17,6 +20,7 @@ body {
     padding: 0px !important;
     // background-color: currentcolor;
     overflow-x: hidden;
+    overflow-y: hidden;
 }
 .card{
     width: 530px;
@@ -24,18 +28,18 @@ body {
     margin-top: 150px;
     padding-top: 100px;
     border-radius: 25px !important;
-    border: 1px solid rgb(0, 47, 255) !important;
+    border: 1px solid #a75959 !important;
     background-color: #ededed  !important;
     // width: 400px;
 }
 .form-control:focus {
     box-shadow:none !important;
-    border: 0.5px solid rgb(0, 47, 255) !important;
+    border: 0.5px solid #a75959 !important;
 
  }
  
 .login-content{
-padding-top: 80px;
+padding-top: 40px;
 text-align: left;
 margin-left: auto;
 margin-right: auto;
@@ -59,7 +63,7 @@ width: 55%;
 .login-btn .btn{
     width: 120px;
     height: 40px;
-    background-color: rgb(0, 47, 255) ;
+    background-color: #a75959 ;
     color: white;
     border-radius: 5px;
 }
@@ -68,23 +72,23 @@ width: 55%;
 }
 .login-btn .btn:hover{
 background-color: white;
-color: rgb(0, 47, 255) ;
-border: 0.5px solid rgb(0, 47, 255);
+color: #a75959 ;
+border: 0.5px solid #a75959 !important;
 }
 .login-content div spain{
 padding-left: 15px;
-font-family: 'Roboto', sans-serif !important;
+font: normal normal Open Sans !important;
 font-size: 16px !important;
 }
 
 .login-content div,.password-content div {
-    font-family: 'Roboto', sans-serif;
+    font: Open Sans !important;
     font-size: 14px; 
 }
 .password-content div span{
 // padding-left: 25px;
 font-size: 16px;
-font-family: 'Roboto', sans-serif;
+font: normal normal Open Sans !important;
 
 }
 .register-link{
@@ -100,6 +104,271 @@ font-family: 'Roboto', sans-serif;
     background-image: none !important;
     border-color: white !important;
 }
+.invalid-user{
+    // margin: auto;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto; 
+    width: 54%;
+    padding: 15px;
+    background-color: #ffdea2;
+    height: 59px;
+    color: palevioletred;
+    border-radius: 10px;
+}
+.profile{
+    display: flex;
+    float: right;
+    color: #07878c;
+    padding-top: 10px;
+    padding-top: 13px;
+    height: 70px;
+}
+.profile-name{
+    padding-top: 10px;
+    cursor: default;
+}
+.app-name{
+    float: left;
+    color: #a75959;
+    font-size: 30px;
+    height: 70px;
+    padding-top: 10px;
+    font-weight: 700;
+}
+.container-header{
+    padding-left: 20px;
+    padding-right: 20px;
+    // padding: 20px;
+    height: 70px;
+    background-color: #f3eaea;
+    box-shadow: 0px 0px 21px -4px #885e5e;
+
+}
+.list-of-user{
+    height: 850px;
+    // background-color: whitesmoke;
+    padding: 15px;
+}
+.online-card{
+    cursor: default;
+    padding: 10px;
+    height: 50px;
+    background-color: #a75959;
+    border-radius: 15px;
+    color:  white;
+    font-size: 20px;
+    font-weight: 600;
+    box-shadow: 0px 0px 21px -4px #885e5e;
+
+
+}
+.users-list{
+    height: 690px;
+    border-radius: 15px;
+    position: relative;
+    top: 20px;
+    border: 0.5px whitesmoke;
+    box-shadow: 0px 0px 21px -4px #885e5e;
+    padding: 5px;
+    overflow-y: auto;   
+}
+.message-container{
+    height: 625px; 
+}
+.message-input{
+    height: 65px;
+    padding-top: 10px;
+    display: flex;
+    background-color: #f3eaea;
+}
+.message-input input{
+    border-radius: 20px !important;
+    height: 45px;
+}
+.message-input input:focus{
+    border: 1px solid #a75959 !important;
+}
+.message-input input:hover{
+    box-shadow: 0px 0px 10px -2px #885e5e;
+}
+.emoj{
+    width: 150px;
+    display: flex;
+}
+.svg-smile{
+    width: 27px;
+    position: relative;
+    top: 8px;
+    left: 21px;
+}
+.svg-mic{
+    width: 27px;
+    position: relative;
+    top: 8px;
+    // left: 21px;
+}
+.svg-sent{
+    width: 27px;
+    position: relative;
+    top: 8px;
+    cursor: pointer !important;
+    // left: 21px;
+}
+.svg-attach{
+    width: 27px;
+    position: relative;
+    top: 8px;
+    left: 39px;
+}
+.message-send{
+width: 75px;
+}
+.chat-room{
+    padding: 0px !important;
+}
+.content-container{
+    position: relative;
+   top: 20px;
+}
+.user-card{
+   cursor: default;
+    color: #07878c;
+    font-size: 16px;
+    font-weight: 500;
+    font-weight: 600;
+    padding-top: 10px;
+    padding-left: 9px;
+}
+.profile-text{
+    cursor: default;
+    font-size: 26px;
+    line-height: 28px;
+    letter-spacing: 0.2625px;
+    color: #31489c;
+    align-items: center;
+    width: 43px;
+    height: 43px;
+    background-color: white;
+    text-align: center;
+    justify-content: center;
+    box-shadow: 0px 0px 21px -4px #885e5e;
+    border: 0.5px solid #a75959;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    padding-top: 7px;
+}
+.user-container{
+    display: flex;
+    // background-color: #f3eaea;
+    // padding: 15px;
+    padding-left: 20px;
+    padding-top: 11px;
+    height: 65px;
+    border-radius: 15px;
+    box-shadow: 0px 0px 21px -4px #885e5e;
+    margin-top: 5px;
+
+}
+/* Chrome, safari */
+*::-webkit-scrollbar {
+	width: 2px;
+    background-color: #f3eaea;
+}
+
+*::-webkit-scrollbar-thumb {
+	background-color: #f3eaea;
+    border-radius: 50px !important;
+
+}
+
+/* Firefox */
+.selector {
+		scrollbar-width: none;
+	}
+    .arrow-up{
+        cursor: pointer;
+        background-image: url('assets/icons8-expand-arrow-100.png'); 
+        width: 14px;
+        height: 14px;
+        background-size: 14px 14px;
+        position: absolute;
+        right: 15px;
+        top: 16px;
+        left: 5px;
+        transform: rotate(180deg);
+        transition: all .3s ease 0s;
+    }
+    .arrow-down{
+        cursor: pointer;
+        background-image: url('assets/icons8-expand-arrow-100.png'); 
+        width: 14px;
+        height: 14px;
+        background-size: 14px 14px;
+        position: absolute;
+        right: 15px;
+        top: 16px;
+        left: 5px;
+        transform: rotate(0deg);
+        transition: all .3s ease 0s;
+    }
+    .dropdown{
+        width: 30px;
+    }
+    .dropdownTop ul{
+        border-radius: 5px;
+        position: absolute;
+        margin: 0;
+        right: 0.1%;
+        padding: 0;
+        width: 182px;
+        box-shadow:0px 1px 10px 0px rgba(0,0,0,0.2);
+        background-color: #FFFFFF !important;
+        transform-origin: top;
+        transform: perspective(1000px) rotateX(-90deg);
+        transition: 0.5s;
+       }
+       .dropdownTop ul {
+        top: 70px;
+        z-index: 999;
+       
+       }
+       .dropdownTop ul.active1{
+        transform: perspective(1000px) rotateX(0deg);
+       }
+       .dropdownTop ul li {
+         opacity: 1 !important;
+        list-style: none;
+       }
+       .dropdownTop ul li a {
+         font: normal normal 600 14px/22px Open Sans !important;
+        display:block;
+        padding: 10px 21px;
+        text-align: left;
+        text-decoration: none;
+        color: #676767 !important;
+        border-bottom: 1px solid rgba(0, 0, 0,.2);
+        transition: 0.5s;
+        cursor: pointer;
+       }
+       .dropdownTop ul:before {
+          bottom: 100%;
+          right: 18%;
+        //   border: solid transparent; 
+          content: "";
+          height: 0;
+          width: 0;
+          position: absolute;
+          pointer-events: none;
+          border-color: rgba(136, 183, 213, 0);
+          border-bottom-color: #FFFFFF;
+          border-width: 8px;
+          margin-left: -8px;
+       }
+       .dropdownTop ul:before {
+       bottom: 100%;
+       }
 @media only screen and (max-width: 768px) {
 .card{
     width: 400px;
