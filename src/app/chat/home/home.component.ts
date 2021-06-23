@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { SocketService } from 'src/app/socket.service';
 
 @Component({
   selector: 'app-home',
@@ -8,18 +9,18 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent implements OnInit {
   public users: any[] = [
-    { name: "Ratheesh" },
-    { name: "Magesh" },
-    { name: "Suresh" },
-    { name: "Siva" },
-    { name: "Kumar" },
-    { name: "Thanaraj" },
-    { name: "Ratheesh" },
-    { name: "Magesh" },
-    { name: "Suresh" },
-    { name: "Siva" },
-    { name: "Kumar" },
-    { name: "Thanaraj" },
+    // { name: "Ratheesh",email:"ratheesh93.ngl@gmail.com" },
+    // { name: "Magesh",email:"ratheesh93.ngl@gmail.com"  },
+    // { name: "Suresh",email:"ratheesh93.ngl@gmail.com"  },
+    // { name: "Siva" ,email:"ratheesh93.ngl@gmail.com" },
+    // { name: "Kumar",email:"ratheesh93.ngl@gmail.com"  },
+    // { name: "Thanaraj",email:"ratheesh93.ngl@gmail.com"  },
+    // { name: "Ratheesh",email:"ratheesh93.ngl@gmail.com"  },
+    // { name: "Magesh",email:"ratheesh93.ngl@gmail.com"  },
+    // { name: "Suresh",email:"ratheesh93.ngl@gmail.com"  },
+    // { name: "Siva" ,email:"ratheesh93.ngl@gmail.com" },
+    // { name: "Kumar" ,email:"ratheesh93.ngl@gmail.com" },
+    // { name: "Thanaraj",email:"ratheesh93.ngl@gmail.com"  },
   ]
   public IsMicEnable: boolean = true;
   public IsMicEnablePublic: boolean = true;
@@ -27,7 +28,7 @@ export class HomeComponent implements OnInit {
   public userNameText:any
   onTabClick: boolean = false;
   @ViewChild('expandButton',{static: false}) expandButton:any = ElementRef;
-  constructor( private router:Router,private renderer: Renderer2) { this.userName = "Siva Ratheesh"}
+  constructor( private router:Router,private renderer: Renderer2, private socketService:SocketService) { this.userName = "Siva Ratheesh"}
 
   ngOnInit(): void {
     let name = this.userName .trim();
@@ -43,6 +44,9 @@ export class HomeComponent implements OnInit {
         }
       }
     });
+    this.socketService.onlineUser.subscribe(data =>{
+      this.users.push(data);
+    })
 
   }
   public sentEnable(value: any) {

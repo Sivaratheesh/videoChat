@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiserviceService } from 'src/app/apiservice.service';
+import { SocketService } from 'src/app/socket.service';
 import { Md5 } from 'ts-md5';
 
 @Component({
@@ -17,7 +18,7 @@ export class LoginComponent implements OnInit {
   incorrectPassword: boolean = false;
 
   constructor(private formBuilder: FormBuilder,private apiservice :ApiserviceService,
-    private router:Router) { }
+    private router:Router, private socketservice:SocketService) { }
 
   ngOnInit(): void {
     const emailPattern = '[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,3}';
@@ -41,6 +42,7 @@ export class LoginComponent implements OnInit {
     // console.log(this.loginForm.valid, this.loginForm.value);
     this.apiservice.getuser(obj).subscribe((data: any) => {
       if(data.result == 'success'){
+      this.socketservice.iAmInOnline(data.user);
         this.router.navigate(['app/']);
       }else if(data.result == 'invalid'){
         this.invalidUser = true;

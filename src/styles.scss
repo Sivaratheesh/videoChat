@@ -234,10 +234,10 @@ width: 75px;
 .user-card{
    cursor: default;
     color: #07878c;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 500;
     font-weight: 600;
-    padding-top: 10px;
+    // padding-top: 10px;
     padding-left: 9px;
 }
 .profile-text{
@@ -368,6 +368,10 @@ width: 75px;
        }
        .dropdownTop ul:before {
        bottom: 100%;
+       }
+       .user-email{
+           font-size: 9px;
+           
        }
 @media only screen and (max-width: 768px) {
 .card{
