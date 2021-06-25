@@ -43,7 +43,7 @@ export class HomeComponent implements OnInit, AfterViewChecked {
   constructor(private router: Router, private renderer: Renderer2, private socketService: SocketService, private apiservice: ApiserviceService) {
     if (this.apiservice.getLocalStorage('user')) {
       this.user = this.apiservice.getLocalStorage('user');
-      // this.socketService.iAmInOnline(this.user);
+      this.socketService.iAmInOnline(this.user);
     } else {
       alert('Please login');
       this.router.navigate(['/'])

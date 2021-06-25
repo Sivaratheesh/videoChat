@@ -33,20 +33,23 @@
                     Online Users
                 </div>
                 <div class="users-list">
-                    <div *ngFor="let user of users" class="user-list-card" >
-                        <div *ngIf="!blockRequest" class="btn-request">
-                            <button  class="req-btn" (click)= "createOffer(user)" >Request</button>
-                        </div>
-                        <div class="user-container">
-                            <div class="profile-text"> {{user.profileText}}</div>
-                            <div class="user-card">
-                                {{user.name}}
-                               
+                    <div *ngFor="let u of users" class="position">
+                        <div class="user-list-card">
+                            <div *ngIf="!blockRequest" class="btn-request">
+                                <button  class="req-btn" (click)= "createOffer(u)" >Request</button>
+                            </div>
+                            <div class="user-container">
+                                <div class="profile-text"> {{u.profileText}}</div>
+                                <div class="user-card">
+                                    {{u.name}}
+                                   
+                                </div>
+                            </div>
+                            <div class="user-email">
+                                {{u.email}}
                             </div>
                         </div>
-                        <div class="user-email">
-                            {{user.email}}
-                        </div>
+                        
                     </div>
                 </div>
             </div>
