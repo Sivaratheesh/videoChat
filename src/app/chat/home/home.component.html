@@ -54,7 +54,7 @@
         <div class="c0l-sm-12 col-md-5 col-lg-5">
             <div class="list-of-user">
                 <div class="online-card">
-                    Public Chat
+                   Socket-Public
                 </div>
                 <div class="users-list chat-room">
                     <div class="message-container" #scrollframe>
@@ -84,8 +84,8 @@
 
                             </div>
                         </div>
-                        <input class="form-control" [(ngModel)]="localMsg" (focus)="sentEnable('public')"
-                            (focusout)="sentDisable('public')" placeholder=" Type a message" type="text">
+                        <input class="form-control" [(ngModel)]="localMsg"  (keyup)= "sentEnable('public')"
+                           placeholder=" Type a message" type="text">
                         <div class="message-send">
                             <div *ngIf="IsMicEnablePublic">
                                 <img class="svg-mic" src="assets/icons8-microphone-256.png">
@@ -101,7 +101,7 @@
         <div class="col-sm-12 col-md-5 col-lg-5">
             <div class="list-of-user">
                 <div class="online-card">
-                    Private Chat
+                    WebRtc-Private
                 </div>
                 <div class="users-list chat-room">
                     <div class="message-container" #scrollframePrivate>
@@ -160,7 +160,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="message-input">
+                    <div  class="message-input">
                         <div class="emoj">
                             <div>
                                 <img class="svg-smile" src="assets/smile.png">
@@ -170,8 +170,8 @@
 
                             </div>
                         </div>
-                        <input class="form-control" [(ngModel)]="webRTCMsg" (focus)="sentEnable(' ')"
-                            (focusout)="sentDisable(' ')" placeholder=" Type a message" type="text">
+                        <input [disabled]="!hangUpbtn" (keyup)= "sentEnable(' ')"  class="form-control" [(ngModel)]="webRTCMsg" 
+                           placeholder=" Type a message" type="text">
                         <div class="message-send">
                             <div *ngIf="IsMicEnable">
                                 <img class="svg-mic" src="assets/icons8-microphone-256.png">

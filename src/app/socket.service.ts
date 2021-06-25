@@ -14,6 +14,8 @@ export class SocketService {
   public answer = this.socket.fromEvent<any>('answer');
   public hangupCall = this.socket.fromEvent<any>('hangupCall');
   public anOtherCall = this.socket.fromEvent<any>('anOtherCall');
+ 
+
 
 
 
@@ -45,8 +47,9 @@ export class SocketService {
   alreadyConnected(data: any) {
     this.socket.emit('alreadyConnected', data);
   }
-  logOut(data: any) {
-    this.socket.emit('logOut', data);
+  OfflineUser(data: any) {
+
+    this.socket.emit('logoutUser', data);
   }
   
 }

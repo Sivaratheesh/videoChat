@@ -43,7 +43,7 @@ export class HomeComponent implements OnInit, AfterViewChecked {
   constructor(private router: Router, private renderer: Renderer2, private socketService: SocketService, private apiservice: ApiserviceService) {
     if (this.apiservice.getLocalStorage('user')) {
       this.user = this.apiservice.getLocalStorage('user');
-      console.log(this.user)
+      // this.socketService.iAmInOnline(this.user);
     } else {
       alert('Please login');
       this.router.navigate(['/'])
@@ -59,7 +59,6 @@ export class HomeComponent implements OnInit, AfterViewChecked {
 
       if (data && !this.declineAllCall && !this.requestData) {
         if (data.receiver.email == this.user.email) {
-          console.log(data)
           this.requestData = data;
           await this.localConnection.setRemoteDescription(data.offer);
           this.createanswer = true;
@@ -75,7 +74,6 @@ export class HomeComponent implements OnInit, AfterViewChecked {
 
       if (data) {
         if (data.sender.id == this.user.id) {
-          console.log(data)
           this.requestData = data;
           await this.localConnection.setRemoteDescription(data.answer);
           let name = this.requestData.receiver.name.trim();
@@ -124,7 +122,6 @@ export class HomeComponent implements OnInit, AfterViewChecked {
       }
     });
     this.socketService.onlineUser.subscribe((data: any) => {
-      console.log(data);
       if (data.users) {
         this.users = data.users;
         this.users.forEach(x => {
@@ -133,9 +130,9 @@ export class HomeComponent implements OnInit, AfterViewChecked {
         });
       }
     });
+
     this.apiservice.getAllOnlineuser(this.user.id).subscribe((data: any) => {
       if (data.result == 'success') {
-        console.log(data.users);
         this.users = data.users;
         this.users.forEach(x => {
           let name = x.name.trim();
@@ -171,12 +168,24 @@ export class HomeComponent implements OnInit, AfterViewChecked {
     this.scrollToBottom();
   }
   public sentEnable(value: any) {
-    if (value == 'public') {
-      this.IsMicEnablePublic = false
-    } else {
-      this.IsMicEnable = false;
-    }
+    if (value == 'public' && this.localMsg) {
+      if(this.localMsg.length > 0){
+        this.IsMicEnablePublic = false
+      }
+    } else if(this.webRTCMsg) {
+      if(this.webRTCMsg.length > 0){
+        this.IsMicEnable = false;
+            }
+    }else if(this.webRTCMsg == "") {
+     
+        this.IsMicEnable = true;
+        
+    }else if (value == 'public' && this.localMsg == "") {
+   
+        this.IsMicEnablePublic = true
+  
   }
+}
   private scrollToBottom(): void {
     try {
       this.scrollFrame.nativeElement.scrollTop = this.scrollFrame.nativeElement.scrollHeight;
@@ -195,22 +204,24 @@ export class HomeComponent implements OnInit, AfterViewChecked {
     this.onTabClick = this.onTabClick === true ? false : true;
   }
   public logOut() {
-    this.apiservice.logOutUser(this.user);
-    this.socketService.logOut(this.user);
+    this.socketService.OfflineUser(this.user);
+    // this.apiservice.logOutUser(this.user);
     localStorage.clear();
     this.router.navigate(['/']);
   }
   public sendPublicMessage() {
-    let message = {
-      message: this.localMsg,
-      user: this.user
+    if(this.localMsg.length > 0){
+      let message = {
+        message: this.localMsg,
+        user: this.user
+      }
+      this.socketService.sendMessage(message);
+      this.publicMessage.push(message);
+      this.apiservice.setLocalStorage('message', this.publicMessage);
+      this.localMsg = '';
+      this.IsMicEnablePublic = true
     }
-    this.socketService.sendMessage(message);
-    console.log(message)
-    this.publicMessage.push(message);
-    this.apiservice.setLocalStorage('message', this.publicMessage);
-    this.localMsg = '';
-    this.IsMicEnablePublic = true
+  
   }
   public createConnection() {
     this.localConnection = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
@@ -296,16 +307,18 @@ export class HomeComponent implements OnInit, AfterViewChecked {
   }
 
   public sendPrivateMessage() {
-    const text = this.webRTCMsg;
-    let message = {
-      message: this.webRTCMsg,
-      user: this.user
+    if(this.webRTCMsg.lemgth > 0){
+      const text = this.webRTCMsg;
+      let message = {
+        message: this.webRTCMsg,
+        user: this.user
+      }
+      this.channel.send(this.webRTCMsg);
+      this.privateMessage.push(message);
+      this.webRTCMsg = '';
+      this.IsMicEnable = true;
     }
-    console.log(message)
-    this.channel.send(this.webRTCMsg);
-    this.privateMessage.push(message);
-    this.webRTCMsg = '';
-    this.IsMicEnable = true;
+   
   }
   public hangUp() {
     this.localConnection.close();
