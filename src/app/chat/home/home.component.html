@@ -112,7 +112,7 @@
                                 <button class="hangup-btn" (click)= "hangUp()">Hang Up</button>
                             </div>
                             <div class="webRtcUser">
-                                <!-- <div class="profile-text"> {{requestData.sender.userNameText}}</div> -->
+                                <div class="profile-text"> {{requestData.sender.userNameText}}</div>
                                 <div class="user-card">
                                     {{requestData.sender.name}}                             
                                 </div>
@@ -149,7 +149,7 @@
                         </div>
                         <div *ngFor="let msg of privateMessage">
                             <div class="sender" *ngIf="msg?.user?.id != user.id">
-                                <label>{{msg?.user?.name}}</label>
+                                <!-- <label>{{msg?.user?.name}}</label> -->
                                 <div>
                                     {{msg?.message}}
                                 </div>
