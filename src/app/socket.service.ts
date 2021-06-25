@@ -45,5 +45,8 @@ export class SocketService {
   alreadyConnected(data: any) {
     this.socket.emit('alreadyConnected', data);
   }
+  logOut(data: any) {
+    this.socket.emit('logOut', data);
+  }
   
 }

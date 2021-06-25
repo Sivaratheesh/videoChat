@@ -196,6 +196,7 @@ export class HomeComponent implements OnInit, AfterViewChecked {
   }
   public logOut() {
     this.apiservice.logOutUser(this.user);
+    this.socketService.logOut(this.user);
     localStorage.clear();
     this.router.navigate(['/']);
   }
