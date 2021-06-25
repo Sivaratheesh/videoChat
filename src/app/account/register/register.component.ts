@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ApiserviceService } from 'src/app/apiservice.service';
 import { Md5 } from 'ts-md5';
 
@@ -12,8 +13,14 @@ export class RegisterComponent implements OnInit {
 
   public registerForm: any = FormGroup;
   submitted = false;
+  isregistered: boolean | undefined;
+  alreadyExist: boolean | undefined;
+  isRegisterForm: boolean | undefined;
 
-  constructor(private formBuilder: FormBuilder,private apiservice :ApiserviceService) { }
+
+  constructor(private formBuilder: FormBuilder, private apiservice: ApiserviceService, private router: Router) {
+    this.isRegisterForm = true
+  }
 
   ngOnInit() {
     const emailPattern = '[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,3}';
@@ -52,18 +59,26 @@ export class RegisterComponent implements OnInit {
   register() {
     this.submitted = true;
     const md5 = new Md5();
-    if(this.registerForm.valid){
+    if (this.registerForm.valid) {
       let obj = {
-        name : this.registerForm.value.name,
-        email : this.registerForm.value.email,
-        password :md5.appendStr(this.registerForm.value.password).end()
+        name: this.registerForm.value.name,
+        email: this.registerForm.value.email,
+        password: md5.appendStr(this.registerForm.value.password).end()
       }
-      this.apiservice.insertUser(obj).subscribe(data =>{
-        console.log(data);
+      this.apiservice.insertUser(obj).subscribe((data: any) => {
+        if (data.result == 'success') {
+          this.isRegisterForm = false
+
+          this.isregistered = true;
+        } else if (data.result == 'exist') {
+          this.alreadyExist = true;
+          this.isRegisterForm = false
+        }
+
         // console.log(this.socketservice);  
       })
     }
-  
+
     // console.log(this.registerForm.valid, this.registerForm.value)
   }
 }

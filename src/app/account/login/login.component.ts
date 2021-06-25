@@ -43,6 +43,15 @@ export class LoginComponent implements OnInit {
     this.apiservice.getuser(obj).subscribe((data: any) => {
       if(data.result == 'success'){
       this.socketservice.iAmInOnline(data.user);
+      if(this.apiservice.getLocalStorage('user')){
+        let user = this.apiservice.getLocalStorage('user');
+        if(user.id != data.user.id){
+          localStorage.clear();
+      this.apiservice.setLocalStorage('user',data.user);
+        }
+      }else{
+        this.apiservice.setLocalStorage('user',data.user);
+      }
         this.router.navigate(['app/']);
       }else if(data.result == 'invalid'){
         this.invalidUser = true;

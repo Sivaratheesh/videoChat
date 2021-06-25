@@ -20,6 +20,16 @@ export class ApiserviceService {
 
     return this.http.post('https://chatappapi3005.herokuapp.com/user/', data, this.jwt())
   }
+
+  getAllOnlineuser(id: any) {
+
+    return this.http.get('https://chatappapi3005.herokuapp.com/user/onlineUsers/'+ id, this.jwt())
+  }
+
+  logOutUser(data: any) {
+
+    return this.http.post('https://chatappapi3005.herokuapp.com/user/logOut', data, this.jwt())
+  }
   // intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
   //   const clonedRequest = req.clone({
   //     responseType: 'text'
@@ -46,5 +56,15 @@ export class ApiserviceService {
         'Access-Control-Allow-Origin': '*'
       });
     return { headers: headers };
+  }
+
+  setLocalStorage(key: any, value: any) {
+    localStorage.setItem(key, btoa(JSON.stringify(value)));
+  }
+  getLocalStorage(key: any): any {
+    if (localStorage.getItem(key)) {
+      return JSON.parse(atob(localStorage.getItem(key) || '{}'));
+    } else 
+    { return null; }
   }
 }

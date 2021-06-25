@@ -10,7 +10,14 @@
                 <div class="fonts">
                     Sign Up
                 </div>
-                <form [formGroup]="registerForm" (ngSubmit)="register()">
+                <div *ngIf= "isregistered" class="registration-success">
+                    Registration successful, click <a routerLink="/">here</a>  to login.
+                </div>
+
+                <div *ngIf= "alreadyExist" class="registration-success exist">
+                    You have already registered, click <a routerLink="/">here</a>  to login.
+                </div>
+                <form *ngIf= "isRegisterForm" [formGroup]="registerForm" (ngSubmit)="register()">
                     <div class="login-content">
                         <div>Name <span class="asterisk">*</span> <span>
                                 <input autocomplete="Off" formControlName="name" class="form-control" type="text" autofocus

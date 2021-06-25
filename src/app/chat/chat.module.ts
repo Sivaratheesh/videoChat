@@ -4,6 +4,7 @@ import { PublicChatComponent } from './public-chat/public-chat.component';
 import { PrivateChatComponent } from './private-chat/private-chat.component';
 import { HomeComponent } from './home/home.component';
 import { RouterModule, Routes } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -19,6 +20,7 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
+    FormsModule
   ]
 })
 export class ChatModule { }

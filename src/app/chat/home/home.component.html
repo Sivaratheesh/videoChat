@@ -3,20 +3,23 @@
         <div class="row align-items-start">
             <div class="col">
                 <div class="app-name">
-                    WebRtc The Learning App
+                    WebRtc TLA
                 </div>
             </div>
             <div class="col">
                 <div class="profile dropdownTop">
-                   <div class="profile-name">
-                    {{userName}}
-                   </div>
-                   <div class="dropdown"><span #expandButton [ngClass]="onTabClick === true ? 'arrow-up' : 'arrow-down'" (click)="onClick()"></span></div>
-                   <ul [ngClass]="{'active1': onTabClick === true}">
-                    <li ><a style="cursor: default !important;"><i class="fa fa-user" aria-hidden="true"></i>Profile</a></li>
-                    <li><a (click)="logOut()"><i class="fa fa-sign-out-alt" aria-hidden="true"></i>Logout</a>
-                    </li>
-                </ul>
+                    <div class="profile-name">
+                        {{user.name}}
+                    </div>
+                    <div class="dropdown"><span #expandButton
+                            [ngClass]="onTabClick === true ? 'arrow-up' : 'arrow-down'" (click)="onClick()"></span>
+                    </div>
+                    <ul [ngClass]="{'active1': onTabClick === true}">
+                        <li><a style="cursor: default !important;"><i class="fa fa-user"
+                                    aria-hidden="true"></i>Profile</a></li>
+                        <li><a (click)="logOut()"><i class="fa fa-sign-out-alt" aria-hidden="true"></i>Logout</a>
+                        </li>
+                    </ul>
                     <div class="profile-text"> {{userNameText}}</div>
 
                 </div>
@@ -30,15 +33,20 @@
                     Online Users
                 </div>
                 <div class="users-list">
-                    <div *ngFor="let user of users" class="user-container">
-                        <div class="profile-text"> {{user.profileText}}</div>
-                        <div class="user-card">
-                            {{user.name}}
-                            <div class="user-email">
-                                {{user.email}}
+                    <div *ngFor="let user of users" class="user-list-card" >
+                        <div *ngIf="!blockRequest" class="btn-request">
+                            <button  class="req-btn" (click)= "createOffer(user)" >Request</button>
+                        </div>
+                        <div class="user-container">
+                            <div class="profile-text"> {{user.profileText}}</div>
+                            <div class="user-card">
+                                {{user.name}}
+                               
                             </div>
                         </div>
-                       
+                        <div class="user-email">
+                            {{user.email}}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -49,7 +57,21 @@
                     Public Chat
                 </div>
                 <div class="users-list chat-room">
-                    <div class="message-container">
+                    <div class="message-container" #scrollframe>
+                        <div *ngFor="let msg of publicMessage">
+                            <div class="sender" *ngIf="msg?.user?.id != user.id">
+                                <label>{{msg.user.name}}</label>
+                                <div>
+                                    {{msg.message}}
+                                </div>
+                            </div>
+                            <div class="receiver" *ngIf="msg?.user?.id == user.id">
+                                <label>You</label>
+                                <div>
+                                    {{msg.message}}
+                                </div>
+                            </div>
+                        </div>
 
                     </div>
                     <div class="message-input">
@@ -58,17 +80,18 @@
                                 <img class="svg-smile" src="assets/smile.png">
                             </div>
                             <div>
-                                <img class="svg-attach"  src="assets/icons8-attach-100.png">
+                                <img class="svg-attach" src="assets/icons8-attach-100.png">
 
                             </div>
                         </div>
-                        <input class="form-control" (focus)="sentEnable('public')" (focusout)="sentDisable('public')" placeholder=" Type a message" type="text">
+                        <input class="form-control" [(ngModel)]="localMsg" (focus)="sentEnable('public')"
+                            (focusout)="sentDisable('public')" placeholder=" Type a message" type="text">
                         <div class="message-send">
                             <div *ngIf="IsMicEnablePublic">
-                                <img class="svg-mic"  src="assets/icons8-microphone-256.png">
+                                <img class="svg-mic" src="assets/icons8-microphone-256.png">
                             </div>
                             <div *ngIf="!IsMicEnablePublic">
-                                <img class="svg-sent"  src="assets/icons8-sent-96.png">
+                                <img (click)="sendPublicMessage()" class="svg-sent" src="assets/icons8-sent-96.png">
                             </div>
                         </div>
                     </div>
@@ -81,8 +104,61 @@
                     Private Chat
                 </div>
                 <div class="users-list chat-room">
-                    <div class="message-container">
-
+                    <div class="message-container" #scrollframePrivate>
+                        <div *ngIf="isAccepted" class="card-webrtc-user">
+                            <div class="hangup" *ngIf="hangUpbtn">
+                                <button class="hangup-btn" (click)= "hangUp()">Hang Up</button>
+                            </div>
+                            <div class="webRtcUser">
+                                <div class="profile-text"> {{requestData.sender.userNameText}}</div>
+                                <div class="user-card">
+                                    {{requestData.sender.name}}                             
+                                </div>
+                              
+                            </div>
+                           
+                        </div>
+                        <div *ngIf="isRequestAccepted" class="card-webrtc-user">
+                            <div class="hangup" *ngIf="hangUpbtn">
+                                <button class="hangup-btn" (click)= "hangUp()">Hang Up</button>
+                            </div>
+                            <div class="webRtcUser">
+                                <div class="profile-text"> {{requestData.receiver.userNameText}}</div>
+                                <div class="user-card">
+                                    {{requestData.receiver.name}}
+                                   
+                                </div>
+                              
+                            </div>
+                           
+                        </div>
+                        <div *ngIf="createanswer" class="accept-card">
+                            <div class="header-answer">
+                                Do you want to chat with <span> {{requestData.sender.name}}</span>..?
+                            </div>
+                            <div class="accept-btn-container">
+                                <div>
+                                    <button class="accept" (click)="createAnswer()">Accept</button>
+                                </div>
+                                <div class="decline-btn">
+                                    <button class="decline" (click)="hangUp()">Decline</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngFor="let msg of privateMessage">
+                            <div class="sender" *ngIf="msg?.user?.id != user.id">
+                                <label>{{msg?.user?.name}}</label>
+                                <div>
+                                    {{msg?.message}}
+                                </div>
+                            </div>
+                            <div class="receiver" *ngIf="msg?.user?.id == user.id">
+                                <label>You</label>
+                                <div>
+                                    {{msg?.message}}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="message-input">
                         <div class="emoj">
@@ -90,17 +166,18 @@
                                 <img class="svg-smile" src="assets/smile.png">
                             </div>
                             <div>
-                                <img class="svg-attach"  src="assets/icons8-attach-100.png">
+                                <img class="svg-attach" src="assets/icons8-attach-100.png">
 
                             </div>
                         </div>
-                        <input class="form-control" (focus)="sentEnable(' ')" (focusout)="sentDisable(' ')" placeholder=" Type a message" type="text">
+                        <input class="form-control" [(ngModel)]="webRTCMsg" (focus)="sentEnable(' ')"
+                            (focusout)="sentDisable(' ')" placeholder=" Type a message" type="text">
                         <div class="message-send">
                             <div *ngIf="IsMicEnable">
-                                <img class="svg-mic"  src="assets/icons8-microphone-256.png">
+                                <img class="svg-mic" src="assets/icons8-microphone-256.png">
                             </div>
                             <div *ngIf="!IsMicEnable">
-                                <img class="svg-sent"  src="assets/icons8-sent-96.png">
+                                <img class="svg-sent" (click)="sendPrivateMessage()" src="assets/icons8-sent-96.png">
                             </div>
                         </div>
                     </div>

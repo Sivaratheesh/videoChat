@@ -75,8 +75,7 @@ background-color: white;
 color: #a75959 ;
 border: 0.5px solid #a75959 !important;
 }
-.login-content div spain{
-padding-left: 15px;
+.login-content div span{
 font: normal normal Open Sans !important;
 font-size: 16px !important;
 }
@@ -171,10 +170,15 @@ font: normal normal Open Sans !important;
     border: 0.5px whitesmoke;
     box-shadow: 0px 0px 21px -4px #885e5e;
     padding: 5px;
-    overflow-y: auto;   
+    overflow-y: auto;  
+     
 }
 .message-container{
     height: 625px; 
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    background: rgb(175 76 76 / 42%)
 }
 .message-input{
     height: 65px;
@@ -237,8 +241,9 @@ width: 75px;
     font-size: 18px;
     font-weight: 500;
     font-weight: 600;
-    // padding-top: 10px;
+    padding-top: 10px;
     padding-left: 9px;
+    
 }
 .profile-text{
     cursor: default;
@@ -265,20 +270,32 @@ width: 75px;
     // padding: 15px;
     padding-left: 20px;
     padding-top: 11px;
-    height: 65px;
-    border-radius: 15px;
-    box-shadow: 0px 0px 21px -4px #885e5e;
+
     margin-top: 5px;
 
 }
+.webRtcUser{
+    display: flex;
+    padding-left: 20px;
+    padding-top: 11px;
+    height: 68px;
+
+}
+.users-list .user-list-card{
+    height: 65px;
+    border-radius: 15px;
+    box-shadow: 0px 0px 21px -4px #885e5e;
+}
 /* Chrome, safari */
 *::-webkit-scrollbar {
-	width: 2px;
-    background-color: #f3eaea;
+	width: 5px;
+    background-color: #f3eaea !important;
+    background: rgb(175 76 76 / 8%) !important ;
+
 }
 
 *::-webkit-scrollbar-thumb {
-	background-color: #f3eaea;
+	background-color: #817b7b;
     border-radius: 50px !important;
 
 }
@@ -370,12 +387,154 @@ width: 75px;
        bottom: 100%;
        }
        .user-email{
-           font-size: 9px;
+        font-size: 11px;
+        color: #a75959;
+        position: relative;
+        bottom: 8px;
+        right: 10px;
+        float: right;
            
+       }
+       .registration-success{
+        height: 80px;
+        margin-top: 120px;
+        margin-bottom: 200px;
+        padding-top: 30px;
+        color: white;
+        background-color: #65900e;
+        width: 80%;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 15px;
+       }
+       .registration-success.exist{
+        background-color: #ffdea2 !important;
+        color: rgb(44, 40, 40) !important;
+
+       }
+       .sender{
+           float: left;
+           position: relative;
+    width: auto;
+    left: 20px;
+    text-align: left;
+    height: auto;
+    padding: 8px;
+    background-color: #ededed;
+    border-radius: 10px;
+    margin-top: 20px;
+       }
+       .sender label{
+        font-size: 14px;
+        color: #a75959; 
+        padding-bottom: 4px;
+        font-weight: 600;
+       }
+       .receiver{
+           float: right;
+           position: relative;
+           width: auto;
+           right: 20px;
+           text-align: left;
+           height: auto;
+           padding: 8px;
+           border-radius: 10px;
+           margin-top: 20px;
+           background-color: #f3eaea;
+       }
+       .receiver label {
+        font-size: 14px;
+        color: #07878c;
+        padding-bottom: 4px;
+        font-weight: 600;
+       }
+.receiver div, .sender div {
+    font-size: 16px;
+    font-weight: 400;
+}
+       .req-btn{
+        font-size: 9px;
+        font-weight: 500;
+        border-radius: 5px;
+        background-color: #a75959;
+        color: white;
+       }
+       .btn-request{
+        float: right;
+    padding-right: 10px;
+   
+    //        height: 65px;
+    // border-radius: 15px;
+    // box-shadow: 0px 0px 21px -4px #885e5e;
+       }
+       .accept-card{
+        width: 55%;
+        margin-left: auto;
+        margin-right: auto;
+        background-color: #f3eaea;
+        border-radius: 15px;
+        height: 100px;
+        position: relative;
+    top: 20px;
+       }
+       .accept-btn-container{
+        display: flex;
+        width: 34%;
+        font-size: 12px;
+        margin-left: auto;
+        margin-right: auto;
+        align-items: center;
+        padding-top: 22px;
+       }
+       .decline-btn{
+        position: relative;
+        left: 30px;
+       }
+       .header-answer{
+        padding-top: 13px;
+        font-size: 18px;
+       }
+       .accept{
+        border-radius: 5px;
+        background-color: #36888d;
+        color: white;
+        font-weight: 600;
+       }
+       .decline{
+        border-radius: 5px;
+        background-color: #a75959;
+        color: white;
+        font-weight: 600;
+       }
+       .header-answer span {
+        padding-top: 13px !important;
+        font-size: 18px !important;
+        font-weight: 600;
+        color:#36888d ;
+       }
+       .card-webrtc-user{
+        padding-left: 5px;
+        background-color: #f3eaea;
+       }
+       .hangup{
+
+        float: right;
+    padding-right: 20px;
+    padding-top: 20px;
+       }
+       .hangup-btn{
+           font-size: 12px;
+        border-radius: 5px;
+        background-color: #a75959;
+        color: white;
+        font-weight: 600;
        }
 @media only screen and (max-width: 768px) {
 .card{
     width: 400px;
+}
+.accept-card{
+    width: 84%;
 }
 }
 @media only screen and (max-width: 1200px) {

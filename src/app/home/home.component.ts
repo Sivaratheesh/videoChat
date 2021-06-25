@@ -264,11 +264,9 @@ export class HomeComponent implements OnInit {
     await this.localConnection.setLocalDescription(offer);
   }
   public async acceptOffer() {
-    let data = JSON.parse(this.acceptoffer)
+    let data = JSON.parse(this.acceptoffer);
    await this.localConnection.setRemoteDescription(data);
     this.createAnswer();
-  
-
   }
   public async createAnswer() {
     // this.channel.onmessage = (event: any) => alert(event.data);
@@ -305,7 +303,6 @@ public sendMessage(){
   this.socketservice.sendMessage(this.localMsg);
   this.data.push(this.localMsg);
   this.localMsg = '';
-
 
 }
 }
