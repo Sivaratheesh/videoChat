@@ -34,15 +34,14 @@
                 </div>
                 <div class="users-list">
                     <div *ngFor="let u of users" class="position">
-                        <div class="user-list-card">
+                        <div class="user-list-card" *ngIf = "u.email != this.user.email">
                             <div *ngIf="!blockRequest" class="btn-request">
                                 <button  class="req-btn" (click)= "createOffer(u)" >Request</button>
                             </div>
                             <div class="user-container">
                                 <div class="profile-text"> {{u.profileText}}</div>
                                 <div class="user-card">
-                                    {{u.name}}
-                                   
+                                    {{u.name}}                                  
                                 </div>
                             </div>
                             <div class="user-email">
@@ -113,7 +112,7 @@
                                 <button class="hangup-btn" (click)= "hangUp()">Hang Up</button>
                             </div>
                             <div class="webRtcUser">
-                                <div class="profile-text"> {{requestData.sender.userNameText}}</div>
+                                <!-- <div class="profile-text"> {{requestData.sender.userNameText}}</div> -->
                                 <div class="user-card">
                                     {{requestData.sender.name}}                             
                                 </div>

@@ -14,6 +14,8 @@ export class SocketService {
   public answer = this.socket.fromEvent<any>('answer');
   public hangupCall = this.socket.fromEvent<any>('hangupCall');
   public anOtherCall = this.socket.fromEvent<any>('anOtherCall');
+  public onlineUsers = this.socket.fromEvent<any>('onlineUsers');
+
  
 
 

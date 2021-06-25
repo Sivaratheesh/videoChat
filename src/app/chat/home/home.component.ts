@@ -130,6 +130,16 @@ export class HomeComponent implements OnInit, AfterViewChecked {
         });
       }
     });
+    this.socketService.onlineUsers.subscribe((data: any) => {
+      console.log(data)
+      if (data.users) {
+        this.users = data.users;
+        this.users.forEach(x => {
+          let name = x.name.trim();
+          x.profileText = name.charAt(0).toUpperCase();
+        });
+      }
+    });
 
     this.apiservice.getAllOnlineuser(this.user.id).subscribe((data: any) => {
       if (data.result == 'success') {
@@ -210,7 +220,7 @@ export class HomeComponent implements OnInit, AfterViewChecked {
     this.router.navigate(['/']);
   }
   public sendPublicMessage() {
-    if(this.localMsg.length > 0){
+  
       let message = {
         message: this.localMsg,
         user: this.user
@@ -220,7 +230,7 @@ export class HomeComponent implements OnInit, AfterViewChecked {
       this.apiservice.setLocalStorage('message', this.publicMessage);
       this.localMsg = '';
       this.IsMicEnablePublic = true
-    }
+ 
   
   }
   public createConnection() {
@@ -307,7 +317,7 @@ export class HomeComponent implements OnInit, AfterViewChecked {
   }
 
   public sendPrivateMessage() {
-    if(this.webRTCMsg.lemgth > 0){
+  
       const text = this.webRTCMsg;
       let message = {
         message: this.webRTCMsg,
@@ -317,7 +327,7 @@ export class HomeComponent implements OnInit, AfterViewChecked {
       this.privateMessage.push(message);
       this.webRTCMsg = '';
       this.IsMicEnable = true;
-    }
+   
    
   }
   public hangUp() {
