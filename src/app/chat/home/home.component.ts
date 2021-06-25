@@ -131,7 +131,6 @@ export class HomeComponent implements OnInit, AfterViewChecked {
       }
     });
     this.socketService.onlineUsers.subscribe((data: any) => {
-      console.log(data)
       if (data.users) {
         this.users = data.users;
         this.users.forEach(x => {
@@ -182,7 +181,7 @@ export class HomeComponent implements OnInit, AfterViewChecked {
       if(this.localMsg.length > 0){
         this.IsMicEnablePublic = false
       }
-    } else if(this.webRTCMsg) {
+    } else if(this.webRTCMsg && this.channel) {
       if(this.webRTCMsg.length > 0){
         this.IsMicEnable = false;
             }
@@ -322,12 +321,13 @@ export class HomeComponent implements OnInit, AfterViewChecked {
       let message = {
         message: this.webRTCMsg,
         user: this.user
+      } 
+      if(this.channel){
+        this.channel.send(this.webRTCMsg);
+        this.privateMessage.push(message);
+        this.webRTCMsg = '';
+        this.IsMicEnable = true;
       }
-      this.channel.send(this.webRTCMsg);
-      this.privateMessage.push(message);
-      this.webRTCMsg = '';
-      this.IsMicEnable = true;
-   
    
   }
   public hangUp() {
