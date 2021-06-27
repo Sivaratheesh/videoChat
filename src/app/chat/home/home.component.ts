@@ -61,13 +61,13 @@ export class HomeComponent implements OnInit, AfterViewChecked {
         if (data.receiver.email == this.user.email) {
           this.requestData = data;
           // await this.localConnection.setRemoteDescription(data.answer);
-          const remoteStream:any = new MediaStream();
-          const remoteVideo:any = document.getElementById("remote");
-          remoteVideo.srcObject = remoteStream;
-          this.localConnection.addEventListener('track', async (event:any) => {
-            remoteStream.addTrack(event.track, remoteStream);
-            console.log(remoteStream)
-        });
+        //   const remoteStream:any = new MediaStream();
+        //   const remoteVideo:any = document.getElementById("remote");
+        //   remoteVideo.srcObject = remoteStream;
+        //   this.localConnection.addEventListener('track', async (event:any) => {
+        //     remoteStream.addTrack(event.track, remoteStream);
+        //     console.log(remoteStream)
+        // });
           await this.localConnection.setRemoteDescription(data.offer);
           this.createanswer = true;
           return;
@@ -289,15 +289,15 @@ export class HomeComponent implements OnInit, AfterViewChecked {
         console.log(JSON.stringify(this.offer));
       }
     }
-    const constraints = { 'video': true, 'audio': {'echoCancellation': true}, };
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
-    const localVideo:any = document.getElementById("local");
-    localVideo.srcObject = stream;
-    const localStream = stream;
-    console.log(localStream);
-    localStream.getTracks().forEach(track => {
-      this.localConnection.addTrack(track, localStream);
-  });
+  //   const constraints = { 'video': true, 'audio': {'echoCancellation': true}, };
+  //   const stream = await navigator.mediaDevices.getUserMedia(constraints);
+  //   const localVideo:any = document.getElementById("local");
+  //   localVideo.srcObject = stream;
+  //   const localStream = stream;
+  //   console.log(localStream);
+  //   localStream.getTracks().forEach(track => {
+  //     this.localConnection.addTrack(track, localStream);
+  // });
     const offer = this.localConnection.createOffer();
     await this.localConnection.setLocalDescription(offer);
 
@@ -325,12 +325,14 @@ export class HomeComponent implements OnInit, AfterViewChecked {
       }
     }
     const constraints = { 'video': true, 'audio': {'echoCancellation': true},};
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
-    const localVideo:any = document.getElementById("local");
-    localVideo.srcObject = stream;
+    const mediaDevices = navigator.mediaDevices as any;
+    const stream = await mediaDevices.getDisplayMedia({video: true});
+    // const stream = await   navigator.mediaDevices.getDisplayMedia({video: true})
+    // const localVideo:any = document.getElementById("local");
+    // localVideo.srcObject = stream;
     const localStream = stream;
     console.log(localStream);
-    localStream.getTracks().forEach(track => {
+    localStream.getTracks().forEach((track:any) => {
       this.localConnection.addTrack(track, localStream);
   });
     const answer = this.localConnection.createAnswer();
