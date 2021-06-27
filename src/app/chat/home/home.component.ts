@@ -289,7 +289,7 @@ export class HomeComponent implements OnInit, AfterViewChecked {
         console.log(JSON.stringify(this.offer));
       }
     }
-    const constraints = { 'video': true, 'audio': true };
+    const constraints = { 'video': true, 'audio': {'echoCancellation': true}, };
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
     const localVideo:any = document.getElementById("local");
     localVideo.srcObject = stream;
