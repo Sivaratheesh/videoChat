@@ -60,6 +60,14 @@ export class HomeComponent implements OnInit, AfterViewChecked {
       if (data && !this.declineAllCall && !this.requestData) {
         if (data.receiver.email == this.user.email) {
           this.requestData = data;
+          // await this.localConnection.setRemoteDescription(data.answer);
+          const remoteStream:any = new MediaStream();
+          const remoteVideo:any = document.getElementById("remote");
+          remoteVideo.srcObject = remoteStream;
+          this.localConnection.addEventListener('track', async (event:any) => {
+            remoteStream.addTrack(event.track, remoteStream);
+            console.log(remoteStream)
+        });
           await this.localConnection.setRemoteDescription(data.offer);
           this.createanswer = true;
           return;
@@ -75,7 +83,14 @@ export class HomeComponent implements OnInit, AfterViewChecked {
       if (data) {
         if (data.sender.id == this.user.id) {
           this.requestData = data;
-          await this.localConnection.setRemoteDescription(data.answer);
+          const remoteStream:any = new MediaStream();
+          const remoteVideo:any = document.getElementById("remote");
+          remoteVideo.srcObject = remoteStream;
+          this.localConnection.addEventListener('track', async (event:any) => {
+            remoteStream.addTrack(event.track, remoteStream);
+            console.log(remoteStream)
+        });
+        await this.localConnection.setRemoteDescription(data.answer);
           let name = this.requestData.receiver.name.trim();
           this.requestData.receiver.userNameText = name.charAt(0).toUpperCase();
           this.isRequestAccepted = true;
@@ -178,23 +193,23 @@ export class HomeComponent implements OnInit, AfterViewChecked {
   }
   public sentEnable(value: any) {
     if (value == 'public' && this.localMsg) {
-      if(this.localMsg.length > 0){
+      if (this.localMsg.length > 0) {
         this.IsMicEnablePublic = false
       }
-    } else if(this.webRTCMsg && this.channel) {
-      if(this.webRTCMsg.length > 0){
+    } else if (this.webRTCMsg && this.channel) {
+      if (this.webRTCMsg.length > 0) {
         this.IsMicEnable = false;
-            }
-    }else if(this.webRTCMsg == "") {
-     
-        this.IsMicEnable = true;
-        
-    }else if (value == 'public' && this.localMsg == "") {
-   
-        this.IsMicEnablePublic = true
-  
+      }
+    } else if (this.webRTCMsg == "") {
+
+      this.IsMicEnable = true;
+
+    } else if (value == 'public' && this.localMsg == "") {
+
+      this.IsMicEnablePublic = true
+
+    }
   }
-}
   private scrollToBottom(): void {
     try {
       this.scrollFrame.nativeElement.scrollTop = this.scrollFrame.nativeElement.scrollHeight;
@@ -219,18 +234,18 @@ export class HomeComponent implements OnInit, AfterViewChecked {
     this.router.navigate(['/']);
   }
   public sendPublicMessage() {
-  
-      let message = {
-        message: this.localMsg,
-        user: this.user
-      }
-      this.socketService.sendMessage(message);
-      this.publicMessage.push(message);
-      this.apiservice.setLocalStorage('message', this.publicMessage);
-      this.localMsg = '';
-      this.IsMicEnablePublic = true
- 
-  
+
+    let message = {
+      message: this.localMsg,
+      user: this.user
+    }
+    this.socketService.sendMessage(message);
+    this.publicMessage.push(message);
+    this.apiservice.setLocalStorage('message', this.publicMessage);
+    this.localMsg = '';
+    this.IsMicEnablePublic = true
+
+
   }
   public createConnection() {
     this.localConnection = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
@@ -274,11 +289,28 @@ export class HomeComponent implements OnInit, AfterViewChecked {
         console.log(JSON.stringify(this.offer));
       }
     }
+    const constraints = { 'video': true, 'audio': true };
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    const localVideo:any = document.getElementById("local");
+    localVideo.srcObject = stream;
+    const localStream = stream;
+    console.log(localStream);
+    localStream.getTracks().forEach(track => {
+      this.localConnection.addTrack(track, localStream);
+  });
     const offer = this.localConnection.createOffer();
     await this.localConnection.setLocalDescription(offer);
 
   }
-
+  // public async getUserMedia():any {
+  //   try {
+  //     const constraints = { 'video': true, 'audio': true };
+  //     const stream = await navigator.mediaDevices.getUserMedia(constraints);
+  //     return stream;
+  //   } catch (error) {
+  //     console.error('Error opening video camera.', error);
+  //   }
+  // }
   public async createAnswer() {
     // this.channel.onmessage = (event: any) => alert(event.data);
     this.hangUpbtn = true;
@@ -288,9 +320,19 @@ export class HomeComponent implements OnInit, AfterViewChecked {
         this.answer = this.localConnection.localDescription;
         this.requestData.answer = this.answer;
         this.socketService.sendAnswer(this.requestData);
+        
         console.log(JSON.stringify(this.answer));
       }
     }
+    const constraints = { 'video': true, 'audio': true };
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    const localVideo:any = document.getElementById("local");
+    localVideo.srcObject = stream;
+    const localStream = stream;
+    console.log(localStream);
+    localStream.getTracks().forEach(track => {
+      this.localConnection.addTrack(track, localStream);
+  });
     const answer = this.localConnection.createAnswer();
     await this.localConnection.setLocalDescription(answer);
     let name = this.requestData.sender.name.trim();
@@ -316,19 +358,19 @@ export class HomeComponent implements OnInit, AfterViewChecked {
   }
 
   public sendPrivateMessage() {
-  
-      const text = this.webRTCMsg;
-      let message = {
-        message: this.webRTCMsg,
-        user: this.user
-      } 
-      if(this.channel){
-        this.channel.send(this.webRTCMsg);
-        this.privateMessage.push(message);
-        this.webRTCMsg = '';
-        this.IsMicEnable = true;
-      }
-   
+
+    const text = this.webRTCMsg;
+    let message = {
+      message: this.webRTCMsg,
+      user: this.user
+    }
+    if (this.channel) {
+      this.channel.send(this.webRTCMsg);
+      this.privateMessage.push(message);
+      this.webRTCMsg = '';
+      this.IsMicEnable = true;
+    }
+
   }
   public hangUp() {
     this.localConnection.close();
