@@ -60,7 +60,7 @@ export class SocketService {
     this.socket.emit('roomMessage', data);
   }
   videoService(data: any) {
-console.log(data);
+   console.log(data);
     this.socket.emit('videoService', data);
   }
   
