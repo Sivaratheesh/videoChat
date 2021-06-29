@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  socketUrl: 'https://chatappapi3005.herokuapp.com',
+  socketUrl: 'http://localhost:5000',
 };
 
 /*

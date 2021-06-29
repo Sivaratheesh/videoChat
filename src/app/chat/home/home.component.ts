@@ -40,6 +40,7 @@ export class HomeComponent implements OnInit, AfterViewChecked {
   hangUpbtn: boolean | any;
   blockRequest: boolean | any;
   declineAllCall: boolean | any;
+  roomId: any;
   constructor(private router: Router, private renderer: Renderer2, private socketService: SocketService, private apiservice: ApiserviceService) {
     if (this.apiservice.getLocalStorage('user')) {
       this.user = this.apiservice.getLocalStorage('user');
@@ -48,13 +49,21 @@ export class HomeComponent implements OnInit, AfterViewChecked {
       alert('Please login');
       this.router.navigate(['/'])
     }
-    this.socketService.receiveMessage.subscribe(data => {
+    // this.socketService.receiveMessage.subscribe(data => {
+    //   this.publicMessage.push(data);
+    //   this.apiservice.setLocalStorage('message', this.publicMessage);
+    // })
+    this.socketService.roomEvent.subscribe(data => {
       this.publicMessage.push(data);
       this.apiservice.setLocalStorage('message', this.publicMessage);
     })
     if (this.apiservice.getLocalStorage('message')) {
       this.publicMessage = this.apiservice.getLocalStorage('message')
     }
+    this.socketService.roomVideo.subscribe(track =>{
+             const remoteVideo:any = document.getElementById("remote");
+          remoteVideo.srcObject = track;
+    })
     this.socketService.offer.subscribe(async (data: any) => {
 
       if (data && !this.declineAllCall && !this.requestData) {
@@ -233,18 +242,33 @@ export class HomeComponent implements OnInit, AfterViewChecked {
     localStorage.clear();
     this.router.navigate(['/']);
   }
+  // public sendPublicMessage() {
+
+  //   let message = {
+  //     message: this.localMsg,
+  //     user: this.user
+  //   }
+  //   this.socketService.sendMessage(message);
+  //   this.publicMessage.push(message);
+  //   this.apiservice.setLocalStorage('message', this.publicMessage);
+  //   this.localMsg = '';
+  //   this.IsMicEnablePublic = true
+
+
+  // }
+
   public sendPublicMessage() {
 
     let message = {
       message: this.localMsg,
-      user: this.user
+      user: this.user,
+      room:this.roomId
     }
-    this.socketService.sendMessage(message);
+    this.socketService.roomMessage(message);
     this.publicMessage.push(message);
     this.apiservice.setLocalStorage('message', this.publicMessage);
     this.localMsg = '';
     this.IsMicEnablePublic = true
-
 
   }
   public createConnection() {
@@ -293,6 +317,7 @@ export class HomeComponent implements OnInit, AfterViewChecked {
   //   const stream = await navigator.mediaDevices.getUserMedia(constraints);
   //   const localVideo:any = document.getElementById("local");
   //   localVideo.srcObject = stream;
+  // localVideo.volume = 0;
   //   const localStream = stream;
   //   console.log(localStream);
   //   localStream.getTracks().forEach(track => {
@@ -329,6 +354,8 @@ export class HomeComponent implements OnInit, AfterViewChecked {
     const stream = await mediaDevices.getDisplayMedia({video: true});
     // const stream = await   navigator.mediaDevices.getDisplayMedia({video: true})
     // const localVideo:any = document.getElementById("local");
+    // localVideo.volume = 0;
+    // document.getElementById("local").volume = 0
     // localVideo.srcObject = stream;
     const localStream = stream;
     console.log(localStream);
@@ -392,5 +419,18 @@ export class HomeComponent implements OnInit, AfterViewChecked {
     this.requestData = '';
     this.privateMessage = [];
     this.createConnection();
+  }
+  public async joinRoom(){
+    if(this.roomId.length){
+      this.socketService.createRoom(this.roomId);
+      const constraints = { 'video': true, 'audio': {'echoCancellation': true}, };
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    const localVideo:any = document.getElementById("local");
+    localVideo.srcObject = stream;
+  localVideo.volume = 0;
+  const localStream = stream;
+  this.socketService.videoService(localStream);
+
+    }
   }
 }

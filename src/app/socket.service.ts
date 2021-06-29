@@ -15,10 +15,8 @@ export class SocketService {
   public hangupCall = this.socket.fromEvent<any>('hangupCall');
   public anOtherCall = this.socket.fromEvent<any>('anOtherCall');
   public onlineUsers = this.socket.fromEvent<any>('onlineUsers');
-
- 
-
-
+  public roomEvent = this.socket.fromEvent<any>('roomEvent');
+  public roomVideo = this.socket.fromEvent<any>('roomVideo');
 
 
   constructor(private socket: Socket) { }
@@ -52,6 +50,18 @@ export class SocketService {
   OfflineUser(data: any) {
 
     this.socket.emit('logoutUser', data);
+  }
+  createRoom(data: any) {
+
+    this.socket.emit('createRoom', data);
+  }
+  roomMessage(data: any) {
+
+    this.socket.emit('roomMessage', data);
+  }
+  videoService(data: any) {
+
+    this.socket.emit('videoService', data);
   }
   
 }
