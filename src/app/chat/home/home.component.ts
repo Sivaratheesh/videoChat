@@ -60,9 +60,10 @@ export class HomeComponent implements OnInit, AfterViewChecked {
     if (this.apiservice.getLocalStorage('message')) {
       this.publicMessage = this.apiservice.getLocalStorage('message')
     }
-    this.socketService.roomVideo.subscribe(track =>{
-             const remoteVideo:any = document.getElementById("remote");
-          remoteVideo.srcObject = track;
+    this.socketService.roomVideo.subscribe(track => {
+      console.log(track);
+      const remoteVideo: any = document.getElementById("remote");
+      remoteVideo.srcObject = track;
     })
     this.socketService.offer.subscribe(async (data: any) => {
 
@@ -70,13 +71,13 @@ export class HomeComponent implements OnInit, AfterViewChecked {
         if (data.receiver.email == this.user.email) {
           this.requestData = data;
           // await this.localConnection.setRemoteDescription(data.answer);
-        //   const remoteStream:any = new MediaStream();
-        //   const remoteVideo:any = document.getElementById("remote");
-        //   remoteVideo.srcObject = remoteStream;
-        //   this.localConnection.addEventListener('track', async (event:any) => {
-        //     remoteStream.addTrack(event.track, remoteStream);
-        //     console.log(remoteStream)
-        // });
+          //   const remoteStream:any = new MediaStream();
+          //   const remoteVideo:any = document.getElementById("remote");
+          //   remoteVideo.srcObject = remoteStream;
+          //   this.localConnection.addEventListener('track', async (event:any) => {
+          //     remoteStream.addTrack(event.track, remoteStream);
+          //     console.log(remoteStream)
+          // });
           await this.localConnection.setRemoteDescription(data.offer);
           this.createanswer = true;
           return;
@@ -92,14 +93,14 @@ export class HomeComponent implements OnInit, AfterViewChecked {
       if (data) {
         if (data.sender.id == this.user.id) {
           this.requestData = data;
-          const remoteStream:any = new MediaStream();
-          const remoteVideo:any = document.getElementById("remote");
+          const remoteStream: any = new MediaStream();
+          const remoteVideo: any = document.getElementById("remote");
           remoteVideo.srcObject = remoteStream;
-          this.localConnection.addEventListener('track', async (event:any) => {
+          this.localConnection.addEventListener('track', async (event: any) => {
             remoteStream.addTrack(event.track, remoteStream);
             console.log(remoteStream)
-        });
-        await this.localConnection.setRemoteDescription(data.answer);
+          });
+          await this.localConnection.setRemoteDescription(data.answer);
           let name = this.requestData.receiver.name.trim();
           this.requestData.receiver.userNameText = name.charAt(0).toUpperCase();
           this.isRequestAccepted = true;
@@ -262,7 +263,7 @@ export class HomeComponent implements OnInit, AfterViewChecked {
     let message = {
       message: this.localMsg,
       user: this.user,
-      room:this.roomId
+      room: this.roomId
     }
     this.socketService.roomMessage(message);
     this.publicMessage.push(message);
@@ -313,16 +314,16 @@ export class HomeComponent implements OnInit, AfterViewChecked {
         console.log(JSON.stringify(this.offer));
       }
     }
-  //   const constraints = { 'video': true, 'audio': {'echoCancellation': true}, };
-  //   const stream = await navigator.mediaDevices.getUserMedia(constraints);
-  //   const localVideo:any = document.getElementById("local");
-  //   localVideo.srcObject = stream;
-  // localVideo.volume = 0;
-  //   const localStream = stream;
-  //   console.log(localStream);
-  //   localStream.getTracks().forEach(track => {
-  //     this.localConnection.addTrack(track, localStream);
-  // });
+    //   const constraints = { 'video': true, 'audio': {'echoCancellation': true}, };
+    //   const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    //   const localVideo:any = document.getElementById("local");
+    //   localVideo.srcObject = stream;
+    // localVideo.volume = 0;
+    //   const localStream = stream;
+    //   console.log(localStream);
+    //   localStream.getTracks().forEach(track => {
+    //     this.localConnection.addTrack(track, localStream);
+    // });
     const offer = this.localConnection.createOffer();
     await this.localConnection.setLocalDescription(offer);
 
@@ -345,13 +346,13 @@ export class HomeComponent implements OnInit, AfterViewChecked {
         this.answer = this.localConnection.localDescription;
         this.requestData.answer = this.answer;
         this.socketService.sendAnswer(this.requestData);
-        
+
         console.log(JSON.stringify(this.answer));
       }
     }
-    const constraints = { 'video': true, 'audio': {'echoCancellation': true},};
+    const constraints = { 'video': true, 'audio': { 'echoCancellation': true }, };
     const mediaDevices = navigator.mediaDevices as any;
-    const stream = await mediaDevices.getDisplayMedia({video: true});
+    const stream = await mediaDevices.getDisplayMedia({ video: true });
     // const stream = await   navigator.mediaDevices.getDisplayMedia({video: true})
     // const localVideo:any = document.getElementById("local");
     // localVideo.volume = 0;
@@ -359,9 +360,9 @@ export class HomeComponent implements OnInit, AfterViewChecked {
     // localVideo.srcObject = stream;
     const localStream = stream;
     console.log(localStream);
-    localStream.getTracks().forEach((track:any) => {
+    localStream.getTracks().forEach((track: any) => {
       this.localConnection.addTrack(track, localStream);
-  });
+    });
     const answer = this.localConnection.createAnswer();
     await this.localConnection.setLocalDescription(answer);
     let name = this.requestData.sender.name.trim();
@@ -420,16 +421,16 @@ export class HomeComponent implements OnInit, AfterViewChecked {
     this.privateMessage = [];
     this.createConnection();
   }
-  public async joinRoom(){
-    if(this.roomId.length){
+  public async joinRoom() {
+    if (this.roomId.length) {
       this.socketService.createRoom(this.roomId);
-      const constraints = { 'video': true, 'audio': {'echoCancellation': true}, };
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
-    const localVideo:any = document.getElementById("local");
-    localVideo.srcObject = stream;
-  localVideo.volume = 0;
-  const localStream = stream;
-  this.socketService.videoService(localStream);
+      const constraints = { 'video': true, 'audio': { 'echoCancellation': true }, };
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      const localVideo: any = document.getElementById("local");
+      localVideo.srcObject = stream;
+      localVideo.volume = 0;
+      const localStream = stream;
+      this.socketService.videoService(localStream);
 
     }
   }
