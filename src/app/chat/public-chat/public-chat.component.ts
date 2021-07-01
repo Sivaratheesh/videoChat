@@ -223,7 +223,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked  {
       console.log("start",event);
 
       if (this.isRoomCreator) { 
-        this.localConnection = new RTCPeerConnection(this.iceServers);
+        this.localConnection = await new RTCPeerConnection(this.iceServers);
        this. localStream.getTracks().forEach((track: any) => {
           this.localConnection.addTrack(track, this.localStream);
         });
@@ -247,7 +247,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked  {
             // })
           }
         }
-        const offer = this.localConnection.createOffer();
+        const offer = await this.localConnection.createOffer();
         await this.localConnection.setLocalDescription(offer);
         let offerObj={
           type: 'webrtc_offer',
@@ -255,17 +255,17 @@ export class PublicChatComponent implements OnInit, AfterViewChecked  {
           roomId:this.roomId
       
         }
-        this.socketService.webrtc_offer(offerObj);
+       await this.socketService.webrtc_offer(offerObj);
       }
      
     })
 
     this.socketService.webrtc_offers.subscribe(async (event:any)=>{
 
-      if(!this.isRoomCreator){
+      if(!this.isRoomCreator && event){
       console.log("offer",event);
 
-        this.localConnection = new RTCPeerConnection(this.iceServers);
+        this.localConnection = await new RTCPeerConnection(this.iceServers);
         this. localStream.getTracks().forEach((track: any) => {
            this.localConnection.addTrack(track, this.localStream);
          });
@@ -543,7 +543,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked  {
   }
   public async joinRoom() {
     if (this.roomId.length) {
-      this.socketService.createRoom(this.roomId);
+     await this.socketService.createRoom(this.roomId);
       const constraints = { 'video': true, 'audio': { 'echoCancellation': true }, };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       const localVideo: any = document.getElementById("local");
