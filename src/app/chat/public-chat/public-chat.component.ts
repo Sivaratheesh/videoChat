@@ -278,7 +278,6 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
           // console.log(remoteStream)
         });
         console.log("2")
-
         this.localConnection.onicecandidate = (event: any) => {
           if (event.candidate) {
             let data = {
@@ -292,6 +291,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
             // })
           }
         }
+        await this.localConnection.setRemoteDescription(new RTCSessionDescription(event.sdp));
         const answer = this.localConnection.createAnswer();
         await this.localConnection.setLocalDescription(answer);
         let offerObj = {
@@ -301,16 +301,15 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
 
         }
         await this.socketService.webrtc_answer(offerObj);
-        this.localConnection.setRemoteDescription(new RTCSessionDescription(event));
 
         console.log("answer", answer)
       }
 
     })
-    this.socketService.webrtc_answers.subscribe((event: any) => {
+    this.socketService.webrtc_answers.subscribe(async (event: any) => {
       console.log("answer", event);
       if (event) {
-        this.localConnection.setRemoteDescription(new RTCSessionDescription(event));
+       await this.localConnection.setRemoteDescription(new RTCSessionDescription(event.sdp));
 
       }
 
