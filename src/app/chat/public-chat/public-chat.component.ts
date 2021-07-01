@@ -211,12 +211,17 @@ export class PublicChatComponent implements OnInit, AfterViewChecked  {
       }
     })
     this.socketService.room_created.subscribe((even:any)=>{
+      console.log("room done",even);
       this.isRoomCreator = true
     })
     this.socketService.room_joined.subscribe((even:any)=>{
+      console.log('joined',even);
+
    this.socketService.startCall(this.roomId)
     })
     this.socketService.start_Call.subscribe(async (event:any)=>{
+      console.log("start",event);
+
       if (this.isRoomCreator) { 
         this.localConnection = new RTCPeerConnection(this.iceServers);
        this. localStream.getTracks().forEach((track: any) => {
@@ -256,7 +261,10 @@ export class PublicChatComponent implements OnInit, AfterViewChecked  {
     })
 
     this.socketService.webrtc_offers.subscribe(async (event:any)=>{
+
       if(!this.isRoomCreator){
+      console.log("offer",event);
+
         this.localConnection = new RTCPeerConnection(this.iceServers);
         this. localStream.getTracks().forEach((track: any) => {
            this.localConnection.addTrack(track, this.localStream);
@@ -295,10 +303,14 @@ export class PublicChatComponent implements OnInit, AfterViewChecked  {
    
     })
     this.socketService.webrtc_answers.subscribe((event:any)=>{
+      console.log("answer",event);
+
       this.localConnection.setRemoteDescription(new RTCSessionDescription(event));
 
     })
     this.socketService.webrtc_ice_candidates.subscribe((event:any)=>{
+      console.log("ice",event);
+
       let candidate = new RTCIceCandidate({
         sdpMLineIndex: event.label,
         candidate: event.candidate,
