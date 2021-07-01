@@ -17,6 +17,17 @@ export class SocketService {
   public onlineUsers = this.socket.fromEvent<any>('onlineUsers');
   public roomEvent = this.socket.fromEvent<any>('roomEvent');
   public roomVideo = this.socket.fromEvent<any>('roomVideo');
+  public room_created = this.socket.fromEvent<any>('room_created');
+  public room_joined = this.socket.fromEvent<any>('room_joined');
+  public start_Call = this.socket.fromEvent<any>('start_call');
+  public webrtc_offers = this.socket.fromEvent<any>('webrtc_offers');
+  public webrtc_answers = this.socket.fromEvent<any>('webrtc_answers');
+  public webrtc_ice_candidates = this.socket.fromEvent<any>('webrtc_ice_candidates');
+
+
+
+
+
 
 
   constructor(private socket: Socket) { }
@@ -63,5 +74,20 @@ export class SocketService {
    console.log(data);
     this.socket.emit('videoService', data);
   }
-  
+  startCall(data:any){
+    this.socket.emit('start_calls', data)
+
+  }
+  webrtc_ice_candidate(data:any){
+    this.socket.emit('webrtc_ice_candidate', data)
+
+  }
+  webrtc_offer(data:any){
+    this.socket.emit('webrtc_offer', data)
+
+  }
+  webrtc_answer(data:any){
+    this.socket.emit('webrtc_answer', data)
+
+  }
 }

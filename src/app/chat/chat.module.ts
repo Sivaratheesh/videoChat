@@ -7,7 +7,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', component: PublicChatComponent },
   // { path: 'register', component: RegisterComponent },
 ]
 

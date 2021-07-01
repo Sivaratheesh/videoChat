@@ -1,1 +1,204 @@
-<p>public-chat works!</p>
+<div class="container-fluid">
+    <div class="container-header">
+        <div class="row align-items-start">
+            <div class="col">
+                <div class="app-name">
+                    WebRtc TLA
+                </div>
+            </div>
+            <div class="col">
+                <div class="profile dropdownTop">
+                    <div class="profile-name">
+                        {{user.name}}
+                    </div>
+                    <div class="dropdown"><span #expandButton
+                            [ngClass]="onTabClick === true ? 'arrow-up' : 'arrow-down'" (click)="onClick()"></span>
+                    </div>
+                    <ul [ngClass]="{'active1': onTabClick === true}">
+                        <li><a style="cursor: default !important;"><i class="fa fa-user"
+                                    aria-hidden="true"></i>Profile</a></li>
+                        <li><a (click)="logOut()"><i class="fa fa-sign-out-alt" aria-hidden="true"></i>Logout</a>
+                        </li>
+                    </ul>
+                    <div class="profile-text"> {{userNameText}}</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row align-items-start content-container">
+        <div class="c0l-sm-12 col-md-2 col-lg-2">
+            <div class="list-of-user">
+                <div class="online-card">
+                    Online Users
+                </div>
+                <div class="users-list">
+                    <div *ngFor="let u of users" class="position">
+                        <div class="user-list-card" *ngIf = "u.email != this.user.email">
+                            <div *ngIf="!blockRequest" class="btn-request">
+                                <button  class="req-btn" (click)= "createOffer(u)" >Request</button>
+                            </div>
+                            <div class="user-container">
+                                <div class="profile-text"> {{u.profileText}}</div>
+                                <div class="user-card">
+                                    {{u.name}}                                  
+                                </div>
+                            </div>
+                            <div class="user-email">
+                                {{u.email}}
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="c0l-sm-12 col-md-5 col-lg-5">
+            <div class="list-of-user">
+                <div class="online-card">
+                   Socket-Public
+                </div>
+                <div class="users-list chat-room">
+                    <div class="message-container" #scrollframe>
+                        <div>
+                            <input type="text" [(ngModel)]="roomId">
+                            <div>
+                                <button (click)="joinRoom()" >join</button>
+                            </div>
+                        </div>
+                        <div *ngFor="let msg of publicMessage">
+                            <div class="sender" *ngIf="msg?.user?.id != user.id">
+                                <label>{{msg.user.name}}</label>
+                                <div>
+                                    {{msg.message}}
+                                </div>
+                            </div>
+                            <div class="receiver" *ngIf="msg?.user?.id == user.id">
+                                <label>You</label>
+                                <div>
+                                    {{msg.message}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="camera">
+                            <video id = "remote" controls playsinline autoplay loop muted="muted"></video>
+                          </div>
+
+                    </div>
+                    <div class="message-input">
+                        <div class="emoj">
+                            <div>
+                                <img class="svg-smile" src="assets/smile.png">
+                            </div>
+                            <div>
+                                <img class="svg-attach" src="assets/icons8-attach-100.png">
+
+                            </div>
+                        </div>
+                        <input class="form-control" [(ngModel)]="localMsg"  (keyup)= "sentEnable('public')"
+                           placeholder=" Type a message" type="text">
+                        <div class="message-send">
+                            <div *ngIf="IsMicEnablePublic">
+                                <img class="svg-mic" src="assets/icons8-microphone-256.png">
+                            </div>
+                            <div *ngIf="!IsMicEnablePublic">
+                                <img (click)="sendPublicMessage()" class="svg-sent" src="assets/icons8-sent-96.png">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-5 col-lg-5">
+            <div class="list-of-user">
+                <div class="online-card">
+                    WebRtc-Private
+                </div>
+                <div class="users-list chat-room">
+                    <div class="message-container" #scrollframePrivate>
+                        <div *ngIf="isAccepted" class="card-webrtc-user">
+                            <div class="hangup" *ngIf="hangUpbtn">
+                                <button class="hangup-btn" (click)= "hangUp()">Hang Up</button>
+                            </div>
+                            <div class="webRtcUser">
+                                <div class="profile-text"> {{requestData.sender.userNameText}}</div>
+                                <div class="user-card">
+                                    {{requestData.sender.name}}                             
+                                </div>
+                              
+                            </div>
+                           
+                        </div>
+                        <div *ngIf="isRequestAccepted" class="card-webrtc-user">
+                            <div class="hangup" *ngIf="hangUpbtn">
+                                <button class="hangup-btn" (click)= "hangUp()">Hang Up</button>
+                            </div>
+                            <div class="webRtcUser">
+                                <div class="profile-text"> {{requestData.receiver.userNameText}}</div>
+                                <div class="user-card">
+                                    {{requestData.receiver.name}}
+                                   
+                                </div>
+                              
+                            </div>
+                           
+                        </div>
+                        <div *ngIf="createanswer" class="accept-card">
+                            <div class="header-answer">
+                                Do you want to chat with <span> {{requestData.sender.name}}</span>..?
+                            </div>
+                            <div class="accept-btn-container">
+                                <div>
+                                    <button class="accept" (click)="createAnswer()">Accept</button>
+                                </div>
+                                <div class="decline-btn">
+                                    <button class="decline" (click)="hangUp()">Decline</button>
+                                </div>
+                            </div>
+                        </div>
+                       
+                         
+                        <div *ngFor="let msg of privateMessage">
+                            <div class="sender" *ngIf="msg?.user?.id != user.id">
+                                <!-- <label>{{msg?.user?.name}}</label> -->
+                                <div>
+                                    {{msg?.message}}
+                                </div>
+                            </div>
+                            <div class="receiver" *ngIf="msg?.user?.id == user.id">
+                                <label>You</label>
+                                <div>
+                                    {{msg?.message}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="camera">
+                            <video id = "local" controls playsinline autoplay loop muted="muted" ></video>
+                          </div>
+                    </div>
+                    <div  class="message-input">
+                        <div class="emoj">
+                            <div>
+                                <img class="svg-smile" src="assets/smile.png">
+                            </div>
+                            <div>
+                                <img class="svg-attach" src="assets/icons8-attach-100.png">
+
+                            </div>
+                        </div>
+                        <input [disabled]="!hangUpbtn" (keyup)= "sentEnable(' ')"  class="form-control" [(ngModel)]="webRTCMsg" 
+                           placeholder=" Type a message" type="text">
+                        <div class="message-send">
+                            <div *ngIf="IsMicEnable">
+                                <img class="svg-mic" src="assets/icons8-microphone-256.png">
+                            </div>
+                            <div *ngIf="!IsMicEnable">
+                                <img class="svg-sent" (click)="sendPrivateMessage()" src="assets/icons8-sent-96.png">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
