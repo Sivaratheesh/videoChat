@@ -230,8 +230,8 @@ export class PublicChatComponent implements OnInit, AfterViewChecked  {
         // const remoteStream: any = new MediaStream();
         const remoteVideo: any = document.getElementById("remote");
         remoteVideo.srcObject =this.remoteStream;
-        this.localConnection.addEventListener('track', async (event: any) => {
-          this.remoteStream.addTrack(event.track[0],this.remoteStream);
+        this.localConnection.addEventListener('ontrack', async (event: any) => {
+          this.remoteStream.addTrack(event.streams[0],this.remoteStream);
           // console.log(remoteStream)
         });
         this.localConnection.onicecandidate = (event: any) => {
@@ -269,13 +269,16 @@ export class PublicChatComponent implements OnInit, AfterViewChecked  {
         this. localStream.getTracks().forEach((track: any) => {
            this.localConnection.addTrack(track, this.localStream);
          });
+         console.log("2")
          // const remoteStream: any = new MediaStream();
          const remoteVideo: any = document.getElementById("remote");
          remoteVideo.srcObject =this.remoteStream;
-         this.localConnection.addEventListener('track', async (event: any) => {
-           this.remoteStream.addTrack(event.track[0],this.remoteStream);
+         this.localConnection.addEventListener('ontrack', async (event: any) => {
+           this.remoteStream.addTrack(event.streams[0],this.remoteStream);
            // console.log(remoteStream)
          });
+         console.log("2")
+
          this.localConnection.onicecandidate = (event: any) => {
            if (event.candidate) {
              let data = {
@@ -293,7 +296,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked  {
          const answer = this.localConnection.createAnswer();
          await this.localConnection.setLocalDescription(answer);
          let offerObj={
-           type: 'webrtc_offer',
+           type: 'webrtc_answer',
            sdp: answer,
            roomId:this.roomId
        
