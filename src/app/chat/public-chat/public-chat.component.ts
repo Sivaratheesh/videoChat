@@ -9,7 +9,7 @@ import { SocketService } from 'src/app/socket.service';
   templateUrl: './public-chat.component.html',
   styleUrls: ['./public-chat.component.scss']
 })
-export class PublicChatComponent implements OnInit, AfterViewChecked  {
+export class PublicChatComponent implements OnInit, AfterViewChecked {
 
   public users: any[] = []
   public IsMicEnable: boolean = true;
@@ -52,7 +52,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked  {
     ],
   }
   isRoomCreator: boolean | any;
- public localStream: any = new MediaStream();
+  public localStream: any = new MediaStream();
   public remoteStream: any = new MediaStream();
   constructor(private router: Router, private renderer: Renderer2, private socketService: SocketService, private apiservice: ApiserviceService) {
     if (this.apiservice.getLocalStorage('user')) {
@@ -210,115 +210,120 @@ export class PublicChatComponent implements OnInit, AfterViewChecked  {
         }
       }
     })
-    this.socketService.room_created.subscribe((even:any)=>{
-      console.log("room done",even);
+    this.socketService.room_created.subscribe((even: any) => {
+      console.log("room done", even);
       this.isRoomCreator = true
     })
-    this.socketService.room_joined.subscribe((even:any)=>{
-      console.log('joined',even);
+    this.socketService.room_joined.subscribe((even: any) => {
+      console.log('joined', even);
 
-   this.socketService.startCall(this.roomId)
+      this.socketService.startCall(this.roomId)
     })
-    this.socketService.start_Call.subscribe(async (event:any)=>{
-      console.log("start",event);
+    this.socketService.start_Call.subscribe(async (event: any) => {
+      console.log("start", event);
 
-      if (this.isRoomCreator) { 
+      if (this.isRoomCreator) {
         this.localConnection = await new RTCPeerConnection(this.iceServers);
-       this. localStream.getTracks().forEach((track: any) => {
+        this.localStream.getTracks().forEach((track: any) => {
           this.localConnection.addTrack(track, this.localStream);
         });
         // const remoteStream: any = new MediaStream();
         const remoteVideo: any = document.getElementById("remote");
-        remoteVideo.srcObject =this.remoteStream;
+        remoteVideo.srcObject = this.remoteStream;
         this.localConnection.addEventListener('ontrack', async (event: any) => {
-          this.remoteStream.addTrack(event.streams[0],this.remoteStream);
+          this.remoteStream.addTrack(event.streams[0], this.remoteStream);
           // console.log(remoteStream)
         });
         this.localConnection.onicecandidate = (event: any) => {
           if (event.candidate) {
             let data = {
-              roomId:this.roomId,
+              roomId: this.roomId,
               label: event.candidate.sdpMLineIndex,
               candidate: event.candidate.candidate,
             }
-            // this.socketService.webrtc_ice_candidate()
+            this.socketService.webrtc_ice_candidate(data)
             // socket.emit('webrtc_ice_candidate', {
-             
+
             // })
           }
         }
         const offer = await this.localConnection.createOffer();
         await this.localConnection.setLocalDescription(offer);
-        let offerObj={
+        let offerObj = {
           type: 'webrtc_offer',
           sdp: offer,
-          roomId:this.roomId
-      
+          roomId: this.roomId
+
         }
-       await this.socketService.webrtc_offer(offerObj);
+        await this.socketService.webrtc_offer(offerObj);
       }
-     
+
     })
 
-    this.socketService.webrtc_offers.subscribe(async (event:any)=>{
+    this.socketService.webrtc_offers.subscribe(async (event: any) => {
 
-      if(!this.isRoomCreator && event){
-      console.log("offer",event);
+      if (!this.isRoomCreator && event) {
+        console.log("offer", event);
 
         this.localConnection = await new RTCPeerConnection(this.iceServers);
-        this. localStream.getTracks().forEach((track: any) => {
-           this.localConnection.addTrack(track, this.localStream);
-         });
-         console.log("2")
-         // const remoteStream: any = new MediaStream();
-         const remoteVideo: any = document.getElementById("remote");
-         remoteVideo.srcObject =this.remoteStream;
-         this.localConnection.addEventListener('ontrack', async (event: any) => {
-           this.remoteStream.addTrack(event.streams[0],this.remoteStream);
-           // console.log(remoteStream)
-         });
-         console.log("2")
+        this.localStream.getTracks().forEach((track: any) => {
+          this.localConnection.addTrack(track, this.localStream);
+        });
+        console.log("2")
+        // const remoteStream: any = new MediaStream();
+        const remoteVideo: any = document.getElementById("remote");
+        remoteVideo.srcObject = this.remoteStream;
+        this.localConnection.addEventListener('ontrack', async (event: any) => {
+          this.remoteStream.addTrack(event.streams[0], this.remoteStream);
+          // console.log(remoteStream)
+        });
+        console.log("2")
 
-         this.localConnection.onicecandidate = (event: any) => {
-           if (event.candidate) {
-             let data = {
-               roomId:this.roomId,
-               label: event.candidate.sdpMLineIndex,
-               candidate: event.candidate.candidate,
-             }
-             // this.socketService.webrtc_ice_candidate()
-             // socket.emit('webrtc_ice_candidate', {
-              
-             // })
-           }
-         }
-         this.localConnection.setRemoteDescription(new RTCSessionDescription(event));
-         const answer = this.localConnection.createAnswer();
-         await this.localConnection.setLocalDescription(answer);
-         let offerObj={
-           type: 'webrtc_answer',
-           sdp: answer,
-           roomId:this.roomId
-       
-         }
-         this.socketService.webrtc_answer(offerObj);
+        this.localConnection.onicecandidate = (event: any) => {
+          if (event.candidate) {
+            let data = {
+              roomId: this.roomId,
+              label: event.candidate.sdpMLineIndex,
+              candidate: event.candidate.candidate,
+            }
+            this.socketService.webrtc_ice_candidate(data)
+            // socket.emit('webrtc_ice_candidate', {
+
+            // })
+          }
+        }
+        this.localConnection.setRemoteDescription(new RTCSessionDescription(event));
+        const answer = this.localConnection.createAnswer();
+        await this.localConnection.setLocalDescription(answer);
+        let offerObj = {
+          type: 'webrtc_answer',
+          sdp: answer,
+          roomId: this.roomId
+
+        }
+        await this.socketService.webrtc_answer(offerObj);
+        console.log("answe", answer)
       }
-   
-    })
-    this.socketService.webrtc_answers.subscribe((event:any)=>{
-      console.log("answer",event);
-
-      this.localConnection.setRemoteDescription(new RTCSessionDescription(event));
 
     })
-    this.socketService.webrtc_ice_candidates.subscribe((event:any)=>{
-      console.log("ice",event);
+    this.socketService.webrtc_answers.subscribe((event: any) => {
+      console.log("answer", event);
+      if (event) {
+        this.localConnection.setRemoteDescription(new RTCSessionDescription(event));
 
-      let candidate = new RTCIceCandidate({
-        sdpMLineIndex: event.label,
-        candidate: event.candidate,
-      })
-      this.localConnection.addIceCandidate(candidate)
+      }
+
+    })
+    this.socketService.webrtc_ice_candidates.subscribe((event: any) => {
+      console.log("ice", event);
+      if (event.candidate) {
+        let candidate = new RTCIceCandidate({
+          sdpMLineIndex: event.label,
+          candidate: event.candidate,
+        })
+        this.localConnection.addIceCandidate(candidate)
+      }
+
     })
   }
   ngAfterViewChecked() {
@@ -546,7 +551,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked  {
   }
   public async joinRoom() {
     if (this.roomId.length) {
-     await this.socketService.createRoom(this.roomId);
+      await this.socketService.createRoom(this.roomId);
       const constraints = { 'video': true, 'audio': { 'echoCancellation': true }, };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       const localVideo: any = document.getElementById("local");
