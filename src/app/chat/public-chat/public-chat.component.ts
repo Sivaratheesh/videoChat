@@ -230,8 +230,8 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
         // const remoteStream: any = new MediaStream();
         const remoteVideo: any = document.getElementById("remote");
         remoteVideo.srcObject = this.remoteStream;
-        this.localConnection.addEventListener('ontrack', async (event: any) => {
-          this.remoteStream.addTrack(event.streams[0], this.remoteStream);
+        this.localConnection.addEventListener('track', async (event: any) => {
+          this.remoteStream.addTrack(event.track, this.remoteStream);
           // console.log(remoteStream)
         });
         this.localConnection.onicecandidate = (event: any) => {
@@ -273,8 +273,8 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
         // const remoteStream: any = new MediaStream();
         const remoteVideo: any = document.getElementById("remote");
         remoteVideo.srcObject = this.remoteStream;
-        this.localConnection.addEventListener('ontrack', async (event: any) => {
-          this.remoteStream.addTrack(event.streams[0], this.remoteStream);
+        this.localConnection.addEventListener('track', async (event: any) => {
+          this.remoteStream.addTrack(event.track, this.remoteStream);
           // console.log(remoteStream)
         });
         console.log("2")
