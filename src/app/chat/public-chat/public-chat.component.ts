@@ -291,8 +291,8 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
             // })
           }
         }
-        await this.localConnection.setRemoteDescription(event);
-        const answer = this.localConnection.createAnswer();
+        await this.localConnection.setRemoteDescription(new RTCSessionDescription(event));
+        const answer = await this.localConnection.createAnswer();
         await this.localConnection.setLocalDescription(answer);
         let offerObj = {
           type: 'webrtc_answer',
@@ -309,7 +309,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
     this.socketService.webrtc_answers.subscribe( (event: any) => {
       console.log("answer", event);
       if (event) {
-        this.localConnection.setRemoteDescription(event);
+        this.localConnection.setRemoteDescription(new RTCSessionDescription(event));
 
       }
 
