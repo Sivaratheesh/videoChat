@@ -221,20 +221,20 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
     })
     this.socketService.start_Call.subscribe(async (event: any) => {
       console.log("start", event);
-
+        let id = event;
       if (this.isRoomCreator) {
-        this.localConnection = await new RTCPeerConnection(this.iceServers);
+        this.localConnection[id] = await new RTCPeerConnection(this.iceServers);
         this.localStream.getTracks().forEach((track: any) => {
-          this.localConnection.addTrack(track, this.localStream);
+          this.localConnection[id].addTrack(track, this.localStream);
         });
         // const remoteStream: any = new MediaStream();
         const remoteVideo: any = document.getElementById("remote");
         remoteVideo.srcObject = this.remoteStream;
-        this.localConnection.addEventListener('track', async (event: any) => {
+        this.localConnection[id].addEventListener('track', async (event: any) => {
           this.remoteStream.addTrack(event.track, this.remoteStream);
           // console.log(remoteStream)
         });
-        this.localConnection.onicecandidate = (event: any) => {
+        this.localConnection[id].onicecandidate = (event: any) => {
           if (event.candidate) {
             let data = {
               roomId: this.roomId,
@@ -247,12 +247,13 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
             // })
           }
         }
-        const offer = await this.localConnection.createOffer();
-        await this.localConnection.setLocalDescription(offer);
+        const offer = await this.localConnection[id].createOffer();
+        await this.localConnection[id].setLocalDescription(offer);
         let offerObj = {
           type: 'webrtc_offer',
           sdp: offer,
-          roomId: this.roomId
+          roomId: this.roomId,
+          id:id
 
         }
         await this.socketService.webrtc_offer(offerObj);
@@ -264,21 +265,21 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
 
       if (!this.isRoomCreator && event) {
         console.log("offer", event);
-
-        this.localConnection = await new RTCPeerConnection(this.iceServers);
+      let id = event.id
+        this.localConnection[id] = await new RTCPeerConnection(this.iceServers);
         this.localStream.getTracks().forEach((track: any) => {
-          this.localConnection.addTrack(track, this.localStream);
+          this.localConnection[id].addTrack(track, this.localStream);
         });
         console.log("2")
         // const remoteStream: any = new MediaStream();
         const remoteVideo: any = document.getElementById("remote");
         remoteVideo.srcObject = this.remoteStream;
-        this.localConnection.addEventListener('track', async (event: any) => {
+        this.localConnection[id].addEventListener('track', async (event: any) => {
           this.remoteStream.addTrack(event.track, this.remoteStream);
           // console.log(remoteStream)
         });
         console.log("2")
-        this.localConnection.onicecandidate = (event: any) => {
+        this.localConnection[id].onicecandidate = (event: any) => {
           if (event.candidate) {
             let data = {
               roomId: this.roomId,
@@ -291,9 +292,9 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
             // })
           }
         }
-        await this.localConnection.setRemoteDescription(new RTCSessionDescription(event));
-        const answer = await this.localConnection.createAnswer();
-        await this.localConnection.setLocalDescription(answer);
+        await this.localConnection[id].setRemoteDescription(new RTCSessionDescription(event.sdp));
+        const answer = await this.localConnection[id].createAnswer();
+        await this.localConnection[id].setLocalDescription(answer);
         let offerObj = {
           type: 'webrtc_answer',
           sdp: answer,
@@ -307,21 +308,23 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
 
     })
     this.socketService.webrtc_answers.subscribe( (event: any) => {
+      let id = event.id
       console.log("answer", event);
       if (event) {
-        this.localConnection.setRemoteDescription(new RTCSessionDescription(event));
+        this.localConnection[id].setRemoteDescription(new RTCSessionDescription(event.sdp));
 
       }
 
     })
     this.socketService.webrtc_ice_candidates.subscribe((event: any) => {
+      let id = event.id
       console.log("ice", event);
       if (event.candidate) {
         let candidate = new RTCIceCandidate({
           sdpMLineIndex: event.label,
           candidate: event.candidate,
         })
-        this.localConnection.addIceCandidate(candidate)
+        this.localConnection[id].addIceCandidate(candidate)
       }
 
     })
