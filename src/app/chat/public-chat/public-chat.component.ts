@@ -222,19 +222,21 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
     this.socketService.start_Call.subscribe(async (event: any) => {
       console.log("start", event);
         let id = event;
-      if (this.isRoomCreator) {
-        this.localConnection[id] = await new RTCPeerConnection(this.iceServers);
+      if (this.isRoomCreator && id) {
+      // this.localConnection[id] = {};
+
+        this.localConnection = {[id]: {peer: await new RTCPeerConnection(this.iceServers)}};
         this.localStream.getTracks().forEach((track: any) => {
-          this.localConnection[id].addTrack(track, this.localStream);
+          this.localConnection[id].peer.addTrack(track, this.localStream);
         });
         // const remoteStream: any = new MediaStream();
         const remoteVideo: any = document.getElementById("remote");
         remoteVideo.srcObject = this.remoteStream;
-        this.localConnection[id].addEventListener('track', async (event: any) => {
+        this.localConnection[id].peer.addEventListener('track', async (event: any) => {
           this.remoteStream.addTrack(event.track, this.remoteStream);
           // console.log(remoteStream)
         });
-        this.localConnection[id].onicecandidate = (event: any) => {
+        this.localConnection[id].peer.onicecandidate = (event: any) => {
           if (event.candidate) {
             let data = {
               roomId: this.roomId,
@@ -247,8 +249,8 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
             // })
           }
         }
-        const offer = await this.localConnection[id].createOffer();
-        await this.localConnection[id].setLocalDescription(offer);
+        const offer = await this.localConnection[id].peer.createOffer();
+        await this.localConnection[id].peer.setLocalDescription(offer);
         let offerObj = {
           type: 'webrtc_offer',
           sdp: offer,
@@ -266,20 +268,21 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
       if (!this.isRoomCreator && event) {
         console.log("offer", event);
       let id = event.id
-        this.localConnection[id] = await new RTCPeerConnection(this.iceServers);
+      // this.localConnection[id] = {}
+      this.localConnection = {[id]: {peer: await new RTCPeerConnection(this.iceServers)}};
         this.localStream.getTracks().forEach((track: any) => {
-          this.localConnection[id].addTrack(track, this.localStream);
+          this.localConnection[id].peer.addTrack(track, this.localStream);
         });
         console.log("2")
         // const remoteStream: any = new MediaStream();
         const remoteVideo: any = document.getElementById("remote");
         remoteVideo.srcObject = this.remoteStream;
-        this.localConnection[id].addEventListener('track', async (event: any) => {
+        this.localConnection[id].peer.addEventListener('track', async (event: any) => {
           this.remoteStream.addTrack(event.track, this.remoteStream);
           // console.log(remoteStream)
         });
         console.log("2")
-        this.localConnection[id].onicecandidate = (event: any) => {
+        this.localConnection[id].peer.onicecandidate = (event: any) => {
           if (event.candidate) {
             let data = {
               roomId: this.roomId,
@@ -292,9 +295,9 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
             // })
           }
         }
-        await this.localConnection[id].setRemoteDescription(new RTCSessionDescription(event.sdp));
-        const answer = await this.localConnection[id].createAnswer();
-        await this.localConnection[id].setLocalDescription(answer);
+        await this.localConnection[id].peer.setRemoteDescription(new RTCSessionDescription(event.sdp));
+        const answer = await this.localConnection[id].peer.createAnswer();
+        await this.localConnection[id].peer.setLocalDescription(answer);
         let offerObj = {
           type: 'webrtc_answer',
           sdp: answer,
@@ -311,7 +314,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
       let id = event.id
       console.log("answer", event);
       if (event) {
-        this.localConnection[id].setRemoteDescription(new RTCSessionDescription(event.sdp));
+        this.localConnection[id].peer.setRemoteDescription(new RTCSessionDescription(event.sdp));
 
       }
 
@@ -324,7 +327,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
           sdpMLineIndex: event.label,
           candidate: event.candidate,
         })
-        this.localConnection[id].addIceCandidate(candidate)
+        this.localConnection[id].peer.addIceCandidate(candidate);
       }
 
     })
