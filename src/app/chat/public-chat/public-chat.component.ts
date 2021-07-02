@@ -242,6 +242,8 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
               roomId: this.roomId,
               label: event.candidate.sdpMLineIndex,
               candidate: event.candidate.candidate,
+              id:id
+
             }
             this.socketService.webrtc_ice_candidate(data)
             // socket.emit('webrtc_ice_candidate', {
@@ -288,6 +290,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
               roomId: this.roomId,
               label: event.candidate.sdpMLineIndex,
               candidate: event.candidate.candidate,
+              id:id
             }
             this.socketService.webrtc_ice_candidate(data)
             // socket.emit('webrtc_ice_candidate', {
