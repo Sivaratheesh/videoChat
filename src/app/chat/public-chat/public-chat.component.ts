@@ -306,7 +306,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
         }
         await this.socketService.webrtc_answer(offerObj);
 
-        console.log("answer", answer)
+        // console.log("answer", answer)
       }
 
     })
@@ -322,7 +322,11 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
     this.socketService.webrtc_ice_candidates.subscribe((event: any) => {
       let id = event.id
       console.log("ice", event);
-      if (event.candidate) {
+      console.log("ice", this.localConnection[id]);
+
+      // console.log("ice", id);
+
+      if (event.candidate && this.localConnection[id]) {
         let candidate = new RTCIceCandidate({
           sdpMLineIndex: event.label,
           candidate: event.candidate,
