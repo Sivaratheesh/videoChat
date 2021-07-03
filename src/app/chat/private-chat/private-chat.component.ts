@@ -235,6 +235,7 @@ export class PrivateChatComponent implements OnInit {
           this.localConnection[id].peer.addTrack(track, this.localStream);
         });
         // const remoteStream: any = new MediaStream();
+        this.remoteStream = new MediaStream();
         const remoteVideo: any = document.getElementById("remote");
         var v = document.createElement ("video");
         v.srcObject = this.remoteStream;
@@ -244,7 +245,6 @@ export class PrivateChatComponent implements OnInit {
         v.loop =true;
         v.muted = true;
         remoteVideo.appendChild (v);
-        this.remoteStream = null;
         // remoteVideo.srcObject = this.remoteStream;
         this.localConnection[id].peer.addEventListener('track', async (event: any) => {
           this.remoteStream.addTrack(event.track, this.remoteStream);
