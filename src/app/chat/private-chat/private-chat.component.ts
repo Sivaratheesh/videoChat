@@ -330,7 +330,7 @@ export class PrivateChatComponent implements OnInit {
     this.socketService.webrtc_answers.subscribe( (event: any) => {
       let id = event.id
       console.log("answer", event);
-      if (event) {
+      if (event && !this.myId) {
         this.localConnection[id].peer.setRemoteDescription(new RTCSessionDescription(event.sdp));
 
       }
