@@ -8,6 +8,8 @@ import { FormsModule } from '@angular/forms';
 
 const routes: Routes = [
   { path: '', component: PublicChatComponent },
+  { path: 'private', component: PrivateChatComponent },
+
   // { path: 'register', component: RegisterComponent },
 ]
 

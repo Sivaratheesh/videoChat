@@ -1,4 +1,4 @@
-import { ThisReceiver } from '@angular/compiler';
+
 import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiserviceService } from 'src/app/apiservice.service';
@@ -15,8 +15,8 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
   public IsMicEnable: boolean = true;
   public IsMicEnablePublic: boolean = true;
   public userName: any;
-  public userNameText: any
-  public user: any
+  public userNameText: any;
+  public user: any;
   onTabClick: boolean = false;
   public publicMessage: any[] = [];
   @ViewChild('expandButton', { static: false }) expandButton: any = ElementRef;
@@ -54,6 +54,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
   isRoomCreator: boolean | any;
   public localStream: any = new MediaStream();
   public remoteStream: any = new MediaStream();
+  broadcasterId: any;
   constructor(private router: Router, private renderer: Renderer2, private socketService: SocketService, private apiservice: ApiserviceService) {
     if (this.apiservice.getLocalStorage('user')) {
       this.user = this.apiservice.getLocalStorage('user');
@@ -220,9 +221,12 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
       this.socketService.startCall(this.roomId)
     })
     this.socketService.start_Call.subscribe(async (event: any) => {
+      // if(!this.broadcasterId){
+      //   this.broadcasterId=event;
+      // }
       console.log("start", event);
         let id = event;
-      if (this.isRoomCreator && id) {
+      if (this.isRoomCreator &&  id) {
       // this.localConnection[id] = {};
 
         this.localConnection = {[id]: {peer: await new RTCPeerConnection(this.iceServers)}};
