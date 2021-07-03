@@ -244,6 +244,7 @@ export class PrivateChatComponent implements OnInit {
         v.loop =true;
         v.muted = true;
         remoteVideo.appendChild (v);
+        this.remoteStream = null;
         // remoteVideo.srcObject = this.remoteStream;
         this.localConnection[id].peer.addEventListener('track', async (event: any) => {
           this.remoteStream.addTrack(event.track, this.remoteStream);
