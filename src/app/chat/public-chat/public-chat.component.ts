@@ -55,7 +55,13 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
   public localStream: any = new MediaStream();
   public remoteStream: any = new MediaStream();
   broadcasterId: any;
+  localVideo: any | null;
+  remoteVideo: any;
+  local: any;
+  remote: any;
   constructor(private router: Router, private renderer: Renderer2, private socketService: SocketService, private apiservice: ApiserviceService) {
+    this.remote = false;
+    this.local = true;
     if (this.apiservice.getLocalStorage('user')) {
       this.user = this.apiservice.getLocalStorage('user');
       this.socketService.iAmInOnline(this.user);
@@ -225,11 +231,11 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
       //   this.broadcasterId=event;
       // }
       console.log("start", event);
-        let id = event;
-      if (this.isRoomCreator &&  id) {
-      // this.localConnection[id] = {};
+      let id = event;
+      if (this.isRoomCreator && id) {
+        // this.localConnection[id] = {};
 
-        this.localConnection = {[id]: {peer: await new RTCPeerConnection(this.iceServers)}};
+        this.localConnection = { [id]: { peer: await new RTCPeerConnection(this.iceServers) } };
         this.localStream.getTracks().forEach((track: any) => {
           this.localConnection[id].peer.addTrack(track, this.localStream);
         });
@@ -246,7 +252,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
               roomId: this.roomId,
               label: event.candidate.sdpMLineIndex,
               candidate: event.candidate.candidate,
-              id:id
+              id: id
 
             }
             this.socketService.webrtc_ice_candidate(data)
@@ -261,7 +267,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
           type: 'webrtc_offer',
           sdp: offer,
           roomId: this.roomId,
-          id:id
+          id: id
 
         }
         await this.socketService.webrtc_offer(offerObj);
@@ -273,9 +279,9 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
 
       if (!this.isRoomCreator && event) {
         console.log("offer", event);
-      let id = event.id
-      // this.localConnection[id] = {}
-      this.localConnection = {[id]: {peer: await new RTCPeerConnection(this.iceServers)}};
+        let id = event.id
+        // this.localConnection[id] = {}
+        this.localConnection = { [id]: { peer: await new RTCPeerConnection(this.iceServers) } };
         this.localStream.getTracks().forEach((track: any) => {
           this.localConnection[id].peer.addTrack(track, this.localStream);
         });
@@ -294,7 +300,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
               roomId: this.roomId,
               label: event.candidate.sdpMLineIndex,
               candidate: event.candidate.candidate,
-              id:id
+              id: id
             }
             this.socketService.webrtc_ice_candidate(data)
             // socket.emit('webrtc_ice_candidate', {
@@ -317,7 +323,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
       }
 
     })
-    this.socketService.webrtc_answers.subscribe( (event: any) => {
+    this.socketService.webrtc_answers.subscribe((event: any) => {
       let id = event.id
       console.log("answer", event);
       if (event) {
@@ -571,13 +577,74 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
       await this.socketService.createRoom(this.roomId);
       const constraints = { 'video': true, 'audio': { 'echoCancellation': true }, };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      const localVideo: any = document.getElementById("local");
-      localVideo.srcObject = stream;
-      localVideo.volume = 0;
+
+      this.localVideo = document.getElementById("local");
+      this.localVideo.controls = false;
+      this.localVideo.muted = true;
+      this.remoteVideo = document.getElementById("remote");
+
+      this.remoteVideo.width = 200;
+      this.remoteVideo.height = 130;
+
+
+
+      // localVideo.controls.hide()
+      this.localVideo.srcObject = stream;
+      this.localVideo.volume = 0;
       this.localStream = stream;
+      // let video_button = document.createElement("video_button");
+      // const localVideo2: any = document.getElementById("local2");
+      // let audio_button = document.createElement("audio_button");
+      // localVideo2.appendChild(document.createTextNode("Toggle hold"));
+      // audio_button.click = function () {
+      // stream.getAudioTracks()[0].enabled = !(stream.getAudioTracks()[0].enabled);
+      // }
+
       // this.socketService.videoService(localStream);
 
     }
+  }
+  public micmute() {
+    this.localVideo.muted = true ? false : true;
+
+
+    // this.localVideo.requestFullscreen()
+    // this.localStream.getVideoTracks()[0].enabled = !this.localStream.getVideoTracks()[0].enabled;
+    this.localStream.getAudioTracks()[0].enabled = !this.localStream.getAudioTracks()[0].enabled;
+  }
+  public async show(value: any) {
+    if (value == 'local') {
+      this.remote = false;
+      this.local = true;
+      const constraints = { 'video': true, 'audio': { 'echoCancellation': true }, };
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      this.localVideo = document.getElementById("local");
+      this.localVideo.controls = false;
+      this.localVideo.muted = true;
+      this.remoteVideo = document.getElementById("remote");
+      this.remoteVideo.width = 200;
+      this.remoteVideo.height = 130;
+      // localVideo.controls.hide()
+      this.localVideo.srcObject = stream;
+      this.localVideo.volume = 0;
+      this.localStream = stream;
+    } else if (value == 'remote') {
+      this.remote = true;
+      this.local = false;
+      const constraints = { 'video': true, 'audio': { 'echoCancellation': true }, };
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      this.localVideo = document.getElementById("local");
+      this.localVideo.controls = false;
+      this.localVideo.muted = true;
+      this.remoteVideo = document.getElementById("remote");
+      this.localVideo.width = 200;
+      this.localVideo.height = 130;
+      // localVideo.controls.hide()
+      this.localVideo.srcObject = stream;
+      this.localVideo.volume = 0;
+      this.localStream = stream;
+    }
+
   }
 }
 
