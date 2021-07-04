@@ -59,6 +59,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
   remoteVideo: any;
   local: any;
   remote: any;
+  remoteID: any;
   constructor(private router: Router, private renderer: Renderer2, private socketService: SocketService, private apiservice: ApiserviceService) {
     this.remote = false;
     this.local = true;
@@ -231,6 +232,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
       //   this.broadcasterId=event;
       // }
       console.log("start", event);
+      this.remoteID= event;
       let id = event;
       if (this.isRoomCreator && id) {
         // this.localConnection[id] = {};
@@ -622,6 +624,10 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
       this.localVideo.controls = false;
       this.localVideo.muted = true;
       this.remoteVideo = document.getElementById("remote");
+      this.localConnection[ this.remoteID].peer.addEventListener('track', async (event: any) => {
+        this.remoteStream.addTrack(event.track, this.remoteStream);
+        // console.log(remoteStream)
+      });
       this.remoteVideo.width = 200;
       this.remoteVideo.height = 130;
       // localVideo.controls.hide()
@@ -637,6 +643,10 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
       this.localVideo.controls = false;
       this.localVideo.muted = true;
       this.remoteVideo = document.getElementById("remote");
+      this.localConnection[ this.remoteID].peer.addEventListener('track', async (event: any) => {
+        this.remoteStream.addTrack(event.track, this.remoteStream);
+        // console.log(remoteStream)
+      });
       this.localVideo.width = 200;
       this.localVideo.height = 130;
       // localVideo.controls.hide()
