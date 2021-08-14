@@ -64,6 +64,8 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
   remoteID: any;
   remoteLocal: any | null;
   remoteRemote: any | null;
+  localId: any | null;
+  remoteId: any | null;
   constructor(private router: Router, private renderer: Renderer2, private socketService: SocketService, private apiservice: ApiserviceService) {
     this.remote = false;
     this.local = true;
@@ -89,9 +91,12 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
       this.publicMessage = this.apiservice.getLocalStorage('message')
     }
     this.socketService.roomVideo.subscribe(track => {
-      console.log(track);
-      const remoteVideo: any = document.getElementById("remote");
-      remoteVideo.srcObject = track;
+      this.remoteRemote.srcObject = this.remoteStreamA;
+      this.remoteLocal.srcObject = this.remoteStreamA;
+      this.localConnection.addEventListener('track', async (event: any) => {
+        this.remoteStreamA.addTrack(event.track, this.remoteStreamA);
+        // console.log(remoteStream)
+      });
     })
     this.socketService.offer.subscribe(async (data: any) => {
 
@@ -165,8 +170,8 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
   }
 
   ngOnInit(): void {
-    let localVideo =  document.getElementById("localVideo")
-let remoteVideo =  document.getElementById("remoteVideo")
+    this.localId =  document.getElementById("localVideo")
+    this.remoteId  =  document.getElementById("remoteVideo")
     // this.createConnection();
     this.scrollToBottom();
     let name = this.user.name.trim();
@@ -300,10 +305,10 @@ let remoteVideo =  document.getElementById("remoteVideo")
         });
         console.log("2")
         // const remoteStream: any = new MediaStream();
-        const remoteVideo: any = document.getElementById("remote");
-        remoteVideo.srcObject = this.remoteStream;
-        this.localConnection[id].peer.addEventListener('track', async (event: any) => {
-          this.remoteStream.addTrack(event.track, this.remoteStream);
+        this.remoteRemote.srcObject = this.remoteStreamA;
+        this.remoteLocal.srcObject = this.remoteStreamA;
+        this.localConnection.addEventListener('track', async (event: any) => {
+          this.remoteStreamA.addTrack(event.track, this.remoteStreamA);
           // console.log(remoteStream)
         });
         console.log("2")
@@ -361,9 +366,9 @@ let remoteVideo =  document.getElementById("remoteVideo")
       }
 
     })
-    if(remoteVideo && localVideo){
-      localVideo.style.display = "none"
-      remoteVideo.style.display = "block"
+    if(this.remoteId && this.localId){
+      this.localId.style.display = "none"
+      this.remoteId .style.display = "block"
 
     }
   }
@@ -677,6 +682,11 @@ let remoteVideo =  document.getElementById("remoteVideo")
     //   this.localVideo.volume = 0;
     //   this.localStream = stream;
     // }
+    if(this.remoteId && this.localId){
+      this.localId.style.display = "block"
+      this.remoteId .style.display = "none"
+
+    }
 
   }
 }
