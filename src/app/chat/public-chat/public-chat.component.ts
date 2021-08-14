@@ -258,10 +258,10 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
           this.localConnection[id].peer.addTrack(track, this.localStream);
         });
         // const remoteStream: any = new MediaStream();
-        this.remoteRemote.srcObject = this.remoteStreamA;
-        this.remoteLocal.srcObject = this.remoteStreamA;
+        this.remoteRemote.srcObject = this.remoteStream;
+        this.remoteLocal.srcObject = this.remoteStream;
         this.localConnection.addEventListener('track', async (event: any) => {
-          this.remoteStreamA.addTrack(event.track, this.remoteStreamA);
+          this.remoteStream.addTrack(event.track, this.remoteStream);
           // console.log(remoteStream)
         });
         this.localConnection[id].peer.onicecandidate = (event: any) => {
@@ -305,10 +305,10 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
         });
         console.log("2")
         // const remoteStream: any = new MediaStream();
-        this.remoteRemote.srcObject = this.remoteStreamA;
-        this.remoteLocal.srcObject = this.remoteStreamA;
+        this.remoteRemote.srcObject = this.remoteStream;
+        this.remoteLocal.srcObject = this.remoteStream;
         this.localConnection.addEventListener('track', async (event: any) => {
-          this.remoteStreamA.addTrack(event.track, this.remoteStreamA);
+          this.remoteStream.addTrack(event.track, this.remoteStream);
           // console.log(remoteStream)
         });
         console.log("2")
@@ -621,7 +621,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
       // localVideo.controls.hide()
       this.remoteLocal.srcObject = stream;
       this.remoteLocal.volume = 0;
-      this.localStreamA = stream;
+      // this.localStreamA = stream;
       // let video_button = document.createElement("video_button");
       // const localVideo2: any = document.getElementById("local2");
       // let audio_button = document.createElement("audio_button");
@@ -642,7 +642,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
     // this.localStream.getVideoTracks()[0].enabled = !this.localStream.getVideoTracks()[0].enabled;
     this.localStream.getAudioTracks()[0].enabled = !this.localStream.getAudioTracks()[0].enabled;
   }
-  public async show(value: any) {
+  public show(value: any) {
     // if (value == 'local') {
     //   this.remote = false;
     //   this.local = true;
@@ -682,11 +682,11 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
     //   this.localVideo.volume = 0;
     //   this.localStream = stream;
     // }
-    if(this.remoteId && this.localId){
+  
       this.localId.style.display = "block"
-      this.remoteId .style.display = "none"
+      this.remoteId.style.display = "none"
 
-    }
+ 
 
   }
 }
