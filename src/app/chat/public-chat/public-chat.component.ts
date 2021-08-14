@@ -54,15 +54,21 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
   isRoomCreator: boolean | any;
   public localStream: any = new MediaStream();
   public remoteStream: any = new MediaStream();
+  public localStreamA: any = new MediaStream();
+  public remoteStreamA: any = new MediaStream();
   broadcasterId: any;
   localVideo: any | null;
   remoteVideo: any;
   local: any;
   remote: any;
   remoteID: any;
+  remoteLocal: any | null;
+  remoteRemote: any | null;
   constructor(private router: Router, private renderer: Renderer2, private socketService: SocketService, private apiservice: ApiserviceService) {
     this.remote = false;
     this.local = true;
+
+
     if (this.apiservice.getLocalStorage('user')) {
       this.user = this.apiservice.getLocalStorage('user');
       this.socketService.iAmInOnline(this.user);
@@ -70,6 +76,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
       alert('Please login');
       this.router.navigate(['/'])
     }
+
     // this.socketService.receiveMessage.subscribe(data => {
     //   this.publicMessage.push(data);
     //   this.apiservice.setLocalStorage('message', this.publicMessage);
@@ -114,12 +121,13 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
       if (data) {
         if (data.sender.id == this.user.id) {
           this.requestData = data;
-          const remoteStream: any = new MediaStream();
-          const remoteVideo: any = document.getElementById("remote");
-          remoteVideo.srcObject = remoteStream;
+          // const remoteStream: any = new MediaStream();
+          // const remoteVideo: any = document.getElementById("localRemote");
+          this.remoteRemote.srcObject = this.remoteStreamA;
+          this.remoteLocal.srcObject = this.remoteStreamA;
           this.localConnection.addEventListener('track', async (event: any) => {
-            remoteStream.addTrack(event.track, remoteStream);
-            console.log(remoteStream)
+            this.remoteStreamA.addTrack(event.track, this.remoteStreamA);
+            // console.log(remoteStream)
           });
           await this.localConnection.setRemoteDescription(data.answer);
           let name = this.requestData.receiver.name.trim();
@@ -153,9 +161,12 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
         }
       }
     })
+ 
   }
 
   ngOnInit(): void {
+    let localVideo =  document.getElementById("localVideo")
+let remoteVideo =  document.getElementById("remoteVideo")
     // this.createConnection();
     this.scrollToBottom();
     let name = this.user.name.trim();
@@ -242,10 +253,10 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
           this.localConnection[id].peer.addTrack(track, this.localStream);
         });
         // const remoteStream: any = new MediaStream();
-        const remoteVideo: any = document.getElementById("remote");
-        remoteVideo.srcObject = this.remoteStream;
-        this.localConnection[id].peer.addEventListener('track', async (event: any) => {
-          this.remoteStream.addTrack(event.track, this.remoteStream);
+        this.remoteRemote.srcObject = this.remoteStreamA;
+        this.remoteLocal.srcObject = this.remoteStreamA;
+        this.localConnection.addEventListener('track', async (event: any) => {
+          this.remoteStreamA.addTrack(event.track, this.remoteStreamA);
           // console.log(remoteStream)
         });
         this.localConnection[id].peer.onicecandidate = (event: any) => {
@@ -350,6 +361,11 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
       }
 
     })
+    if(remoteVideo && localVideo){
+      localVideo.style.display = "none"
+      remoteVideo.style.display = "block"
+
+    }
   }
   ngAfterViewChecked() {
     this.scrollToBottom();
@@ -580,20 +596,27 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
       const constraints = { 'video': true, 'audio': { 'echoCancellation': true }, };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
 
-      this.localVideo = document.getElementById("local");
+      this.localVideo = document.getElementById("localLocal");
       this.localVideo.controls = false;
       this.localVideo.muted = true;
-      this.remoteVideo = document.getElementById("remote");
-
+      this.remoteVideo = document.getElementById("localRemote");
       this.remoteVideo.width = 200;
       this.remoteVideo.height = 130;
-
-
-
       // localVideo.controls.hide()
       this.localVideo.srcObject = stream;
       this.localVideo.volume = 0;
       this.localStream = stream;
+      
+      this.remoteLocal = document.getElementById("remoteLocal");
+      this.remoteLocal.controls = false;
+      this.remoteLocal.muted = true;
+      this.remoteRemote = document.getElementById("remoteRemote");
+      this.remoteLocal.width = 200;
+      this.remoteLocal.height = 130;
+      // localVideo.controls.hide()
+      this.remoteLocal.srcObject = stream;
+      this.remoteLocal.volume = 0;
+      this.localStreamA = stream;
       // let video_button = document.createElement("video_button");
       // const localVideo2: any = document.getElementById("local2");
       // let audio_button = document.createElement("audio_button");
@@ -615,45 +638,45 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
     this.localStream.getAudioTracks()[0].enabled = !this.localStream.getAudioTracks()[0].enabled;
   }
   public async show(value: any) {
-    if (value == 'local') {
-      this.remote = false;
-      this.local = true;
-      const constraints = { 'video': true, 'audio': { 'echoCancellation': true }, };
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      this.localVideo = document.getElementById("local");
-      this.localVideo.controls = false;
-      this.localVideo.muted = true;
-      this.remoteVideo = document.getElementById("remote");
-      this.localConnection[ this.remoteID].peer.addEventListener('track', async (event: any) => {
-        this.remoteStream.addTrack(event.track, this.remoteStream);
-        // console.log(remoteStream)
-      });
-      this.remoteVideo.width = 200;
-      this.remoteVideo.height = 130;
-      // localVideo.controls.hide()
-      this.localVideo.srcObject = stream;
-      this.localVideo.volume = 0;
-      this.localStream = stream;
-    } else if (value == 'remote') {
-      this.remote = true;
-      this.local = false;
-      const constraints = { 'video': true, 'audio': { 'echoCancellation': true }, };
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      this.localVideo = document.getElementById("local");
-      this.localVideo.controls = false;
-      this.localVideo.muted = true;
-      this.remoteVideo = document.getElementById("remote");
-      this.localConnection[ this.remoteID].peer.addEventListener('track', async (event: any) => {
-        this.remoteStream.addTrack(event.track, this.remoteStream);
-        // console.log(remoteStream)
-      });
-      this.localVideo.width = 200;
-      this.localVideo.height = 130;
-      // localVideo.controls.hide()
-      this.localVideo.srcObject = stream;
-      this.localVideo.volume = 0;
-      this.localStream = stream;
-    }
+    // if (value == 'local') {
+    //   this.remote = false;
+    //   this.local = true;
+    //   const constraints = { 'video': true, 'audio': { 'echoCancellation': true }, };
+    //   const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    //   this.localVideo = document.getElementById("local");
+    //   this.localVideo.controls = false;
+    //   this.localVideo.muted = true;
+    //   this.remoteVideo = document.getElementById("remote");
+    //   this.localConnection[ this.remoteID].peer.addEventListener('track', async (event: any) => {
+    //     this.remoteStream.addTrack(event.track, this.remoteStream);
+    //     // console.log(remoteStream)
+    //   });
+    //   this.remoteVideo.width = 200;
+    //   this.remoteVideo.height = 130;
+    //   // localVideo.controls.hide()
+    //   this.localVideo.srcObject = stream;
+    //   this.localVideo.volume = 0;
+    //   this.localStream = stream;
+    // } else if (value == 'remote') {
+    //   this.remote = true;
+    //   this.local = false;
+    //   const constraints = { 'video': true, 'audio': { 'echoCancellation': true }, };
+    //   const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    //   this.localVideo = document.getElementById("local");
+    //   this.localVideo.controls = false;
+    //   this.localVideo.muted = true;
+    //   this.remoteVideo = document.getElementById("remote");
+    //   this.localConnection[ this.remoteID].peer.addEventListener('track', async (event: any) => {
+    //     this.remoteStream.addTrack(event.track, this.remoteStream);
+    //     // console.log(remoteStream)
+    //   });
+    //   this.localVideo.width = 200;
+    //   this.localVideo.height = 130;
+    //   // localVideo.controls.hide()
+    //   this.localVideo.srcObject = stream;
+    //   this.localVideo.volume = 0;
+    //   this.localStream = stream;
+    // }
 
   }
 }
