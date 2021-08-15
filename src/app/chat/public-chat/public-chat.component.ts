@@ -264,7 +264,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
         // const remoteStream: any = new MediaStream();
         this.remoteRemote.srcObject = this.remoteStream;
         this.remoteLocal.srcObject = this.remoteStream;
-        this.localConnection.addEventListener('track', async (event: any) => {
+        this.localConnection[id].peer.addEventListener('track', async (event: any) => {
           this.remoteStream.addTrack(event.track, this.remoteStream);
           // console.log(remoteStream)
         });
