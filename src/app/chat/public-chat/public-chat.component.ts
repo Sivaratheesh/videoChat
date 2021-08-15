@@ -263,7 +263,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
         });
         // const remoteStream: any = new MediaStream();
         this.remoteRemote.srcObject = this.remoteStream;
-        this.remoteLocal.srcObject = this.remoteStream;
+        this.remoteVideo.srcObject = this.remoteStream;
         this.localConnection[id].peer.addEventListener('track', async (event: any) => {
           this.remoteStream.addTrack(event.track, this.remoteStream);
           // console.log(remoteStream)
@@ -310,7 +310,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
         console.log("2")
         // const remoteStream: any = new MediaStream();
         this.remoteRemote.srcObject = this.remoteStream;
-        this.remoteLocal.srcObject = this.remoteStream;
+        this.remoteVideo.srcObject = this.remoteStream;
         this.localConnection[id].peer.addEventListener('track', async (event: any) => {
           this.remoteStream.addTrack(event.track, this.remoteStream);
           // console.log(remoteStream)
