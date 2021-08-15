@@ -235,4 +235,22 @@ export class SingleRoomComponent implements OnInit {
     }
 
   }
+  public hangUp() {
+    this.localConnection.close();
+    if (this.remoteConnection) {
+      this.remoteConnection.close();
+    }
+    this.localConnection = null;
+    this.remoteConnection = null;
+    this.channel.close();
+    this.channel = null
+    this.hangUpbtn = false;
+    this.isRequestAccepted = false;
+    this.declineAllCall = false;
+    this.blockRequest = false;
+    this.isAccepted = false;
+    this.requestData = '';
+    this.privateMessage = [];
+    this.ngOnInit();
+  }
 }
