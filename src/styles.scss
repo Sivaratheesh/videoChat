@@ -557,3 +557,34 @@ width: 75px;
     width: 450px;
 }
 }
+.call-layer{
+    width: 100%;
+    margin-left: auto;
+    text-align: center;
+    margin-right: auto;
+}
+.join-call{
+    padding-top: 50px;
+}
+.new-btn{
+    width: 100px;
+    height: 40px;
+    color: green;
+    font-weight: 700;
+    font-size: 15px;
+    border-radius: 10px;
+    background-color: #f3eaea;
+    border: 0.5px solid #a75959 !important;
+}
+.code-input{
+    outline: none;
+    width: 350px;
+    height: 40px;
+    border-radius: 10px;
+    border: 0.5px solid #a75959 ;
+    padding-left: 10px;
+}
+.new-btn:hover{
+    background-color:transparent;
+
+}

@@ -1,0 +1,68 @@
+<div class="container-header">
+    <div class="row align-items-start">
+        <div class="col">
+            <div class="app-name">
+                WebRtc TLA
+            </div>
+        </div>
+        <div class="col">
+            <div class="profile dropdownTop">
+                <div class="profile-name">
+                    {{user.name}}
+                </div>
+                <div class="dropdown"><span #expandButton [ngClass]="onTabClick === true ? 'arrow-up' : 'arrow-down'"
+                        (click)="onClick()"></span>
+                </div>
+                <ul [ngClass]="{'active1': onTabClick === true}">
+                    <li><a style="cursor: default !important;"><i class="fa fa-user" aria-hidden="true"></i>Profile</a>
+                    </li>
+                    <li><a (click)="logOut()"><i class="fa fa-sign-out-alt" aria-hidden="true"></i>Logout</a>
+                    </li>
+                </ul>
+                <div class="profile-text"> {{userNameText}}</div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+        <div class="row" style="margin: auto;">
+            <div class="c0l-sm-12 col-md-6 col-lg-6">
+                <div class="call-layer join-call">
+                    <input placeholder=" Enter RTC code to join the call" class="code-input" type="text" [(ngModel)]="roomId">
+                    <div class="join-btn">
+                        <button class="new-btn"  (click)="joinRoom()">Join</button>
+                    </div>
+                </div>
+            </div>
+            <div class="c0l-sm-12 col-md-6 col-lg-6">
+                <div class="call-layer">
+                    <div id="localVideo" class="camera">
+                        <div>
+                            <video style="width: 100%;" id = "localLocal" controls playsinline autoplay loop > </video>
+                            <img class="svg-mic"  src="assets/icons8-microphone-256.png">
+
+                        </div>
+                        <div class="video-layer">
+                            <video id = "localRemote" controls playsinline autoplay loop style="cursor: pointer;"  (click)="show('remote')" ></video>
+                        </div>    
+
+                    </div>
+                    <div id="remoteVideo"  class="camera">
+                        <div>
+                            <video style="width: 100%;"  id = "remoteRemote" controls playsinline autoplay loop > 
+                                <img class="svg-mic" src="assets/icons8-microphone-256.png"></video>
+                        </div>
+                        <div class="video-layer">
+                            <video id = "remoteLocal" controls playsinline autoplay loop style="cursor: pointer;" (click)="show('local')" ></video>
+                        </div>    
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- <div class="camera">
+            <video id = "remote" controls playsinline autoplay loop muted="muted"></video>
+          </div> -->
+
