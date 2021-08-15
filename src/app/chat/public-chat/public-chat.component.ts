@@ -90,14 +90,14 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
     if (this.apiservice.getLocalStorage('message')) {
       this.publicMessage = this.apiservice.getLocalStorage('message')
     }
-    this.socketService.roomVideo.subscribe(track => {
-      this.remoteRemote.srcObject = this.remoteStreamA;
-      this.remoteLocal.srcObject = this.remoteStreamA;
-      this.localConnection.addEventListener('track', async (event: any) => {
-        this.remoteStreamA.addTrack(event.track, this.remoteStreamA);
-        // console.log(remoteStream)
-      });
-    })
+    // this.socketService.roomVideo.subscribe(track => {
+    //   this.remoteRemote.srcObject = this.remoteStream;
+    //   this.remoteLocal.srcObject = this.remoteStream;
+    //   this.localConnection.addEventListener('track', async (event: any) => {
+    //     this.remoteStream.addTrack(event.track, this.remoteStream);
+    //     // console.log(remoteStream)
+    //   });
+    // })
     this.socketService.offer.subscribe(async (data: any) => {
 
       if (data && !this.declineAllCall && !this.requestData) {
@@ -128,10 +128,10 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
           this.requestData = data;
           // const remoteStream: any = new MediaStream();
           // const remoteVideo: any = document.getElementById("localRemote");
-          this.remoteRemote.srcObject = this.remoteStreamA;
-          this.remoteLocal.srcObject = this.remoteStreamA;
+          this.remoteRemote.srcObject = this.remoteStream;
+          this.remoteLocal.srcObject = this.remoteStream;
           this.localConnection.addEventListener('track', async (event: any) => {
-            this.remoteStreamA.addTrack(event.track, this.remoteStreamA);
+            this.remoteStream.addTrack(event.track, this.remoteStream);
             // console.log(remoteStream)
           });
           await this.localConnection.setRemoteDescription(data.answer);
@@ -172,6 +172,10 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
   ngOnInit(): void {
     this.localId =  document.getElementById("localVideo")
     this.remoteId  =  document.getElementById("remoteVideo")
+    this.localVideo = document.getElementById("localLocal");
+    this.remoteVideo = document.getElementById("localRemote");
+    this.remoteLocal = document.getElementById("remoteLocal");
+    this.remoteRemote = document.getElementById("remoteRemote");
     // this.createConnection();
     this.scrollToBottom();
     let name = this.user.name.trim();
@@ -600,26 +604,20 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
       await this.socketService.createRoom(this.roomId);
       const constraints = { 'video': true, 'audio': { 'echoCancellation': true }, };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
-
-      this.localVideo = document.getElementById("localLocal");
       this.localVideo.controls = false;
       this.localVideo.muted = true;
-      this.remoteVideo = document.getElementById("localRemote");
       this.remoteVideo.width = 200;
       this.remoteVideo.height = 130;
       // localVideo.controls.hide()
       this.localVideo.srcObject = stream;
+      this.remoteLocal.srcObject = stream;
       this.localVideo.volume = 0;
       this.localStream = stream;
-      
-      this.remoteLocal = document.getElementById("remoteLocal");
       this.remoteLocal.controls = false;
       this.remoteLocal.muted = true;
-      this.remoteRemote = document.getElementById("remoteRemote");
       this.remoteLocal.width = 200;
       this.remoteLocal.height = 130;
       // localVideo.controls.hide()
-      this.remoteLocal.srcObject = stream;
       this.remoteLocal.volume = 0;
       // this.localStreamA = stream;
       // let video_button = document.createElement("video_button");
@@ -682,11 +680,14 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
     //   this.localVideo.volume = 0;
     //   this.localStream = stream;
     // }
-  
+    if (value == 'local') {
       this.localId.style.display = "block"
       this.remoteId.style.display = "none"
+    }else if (value == 'remote') {
+      this.localId.style.display = "none"
+      this.remoteId.style.display = "block"
 
- 
+    }
 
   }
 }
