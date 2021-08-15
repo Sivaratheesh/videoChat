@@ -304,14 +304,14 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
         let id = event.id
         // this.localConnection[id] = {}
         this.localConnection = { [id]: { peer: await new RTCPeerConnection(this.iceServers) } };
-        this.localConnection[id].peer.addEventListener('track', async (event: any) => {
-          this.remoteStream.addTrack(event.track, this.remoteStream);
+        this.localStream.getTracks().forEach((track: any) => {
+          this.localConnection[id].peer.addTrack(track, this.localStream);
         });
         console.log("2")
         // const remoteStream: any = new MediaStream();
         this.remoteRemote.srcObject = this.remoteStream;
         this.remoteLocal.srcObject = this.remoteStream;
-        this.localConnection.addEventListener('track', async (event: any) => {
+        this.localConnection[id].peer.addEventListener('track', async (event: any) => {
           this.remoteStream.addTrack(event.track, this.remoteStream);
           // console.log(remoteStream)
         });
