@@ -118,9 +118,6 @@ export class SingelToManyComponent implements OnInit,OnDestroy {
         v.playsInline = true;
         v.loop = true;
         v.muted = true;
-        v.width = 200;
-        v.height = 300;
-        v.volume = 0;
         remoteVideo.appendChild(v);
         this.localConnection[id].peer.addEventListener('track', async (event: any) => {
           this.remoteStream.addTrack(event.track, this.remoteStream);
