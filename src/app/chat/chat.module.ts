@@ -27,12 +27,13 @@ const routes: Routes = [
     HomeComponent,
     SingleRoomComponent,
     SingelToManyComponent,
-    NgxSpinnerModule
+    
   ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    FormsModule
+    FormsModule,
+    NgxSpinnerModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 

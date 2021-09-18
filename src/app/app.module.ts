@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
@@ -15,7 +15,6 @@ import { environment } from 'src/environments/environment';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { SharedModule } from './shared/shared.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { NgxSpinnerModule } from "ngx-spinner";
 
 const config: SocketIoConfig = { url:environment.socketUrl,options:{}};
 
@@ -26,8 +25,7 @@ const config: SocketIoConfig = { url:environment.socketUrl,options:{}};
   declarations: [
     AppComponent,
     HomeComponent,
-    DashboardComponent,
-    NgxSpinnerModule
+    DashboardComponent
   ],
   imports: [
     BrowserModule,
@@ -37,7 +35,6 @@ const config: SocketIoConfig = { url:environment.socketUrl,options:{}};
     SharedModule,
     SocketIoModule.forRoot(config),
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [VideoService,ApiserviceService],
   bootstrap: [AppComponent]
 })
