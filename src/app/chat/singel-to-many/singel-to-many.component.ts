@@ -48,8 +48,6 @@ export class SingelToManyComponent implements OnInit,OnDestroy {
   isRoomCreator: boolean | any;
   public localStream: any = new MediaStream();
   public remoteStream: any = new MediaStream();
-  public localStreamA: any = new MediaStream();
-  public remoteStreamA: any = new MediaStream();
   broadcasterId: any;
   localVideo: any | null;
   remoteVideo: any;
@@ -210,13 +208,11 @@ export class SingelToManyComponent implements OnInit,OnDestroy {
       await this.socketService.createRoom(this.roomId);
       const constraints = { 'video': true, 'audio': { 'echoCancellation': true }, };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      if (stream) {
         this.localVideo.controls = false;
         this.localVideo.muted = true;
         this.localVideo.srcObject = stream;
         this.localVideo.volume = 0;
         this.localStream = stream;
-      }
     }
   }
   public logOut() {
