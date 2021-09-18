@@ -219,13 +219,16 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
       await this.socketService.createRoom(this.roomId);
       const constraints = { 'video': true, 'audio': { 'echoCancellation': true }, };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      this.localVideo.controls = false;
-      this.localVideo.muted = true;
-      this.localVideo.srcObject = stream;
-      this.localVideo.volume = 0;
-      this.localStream = stream;
-      this.localVideo.width=200;
-      this.localVideo.height=300;
+      if(stream){
+        this.localVideo.controls = false;
+        this.localVideo.muted = true;
+        this.localVideo.srcObject = stream;
+        this.localVideo.volume = 0;
+        this.localStream = stream;
+        this.localVideo.width=200;
+        this.localVideo.height=300;
+      }
+     
     }
   }
   public logOut() {
