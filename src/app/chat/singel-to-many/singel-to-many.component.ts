@@ -108,7 +108,7 @@ export class SingelToManyComponent implements OnInit,OnDestroy {
         const remoteVideo: any = document.getElementById("remote");
         var v = document.createElement("video");
         v.srcObject = this.remoteStream;
-        v.controls = false;
+        v.controls = true;
         v.autoplay = true;
         v.playsInline = true;
         v.loop = true;
