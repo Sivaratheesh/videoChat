@@ -6,9 +6,10 @@ import { HomeComponent } from './home/home.component';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SingleRoomComponent } from './single-room/single-room.component';
+import { SingelToManyComponent } from './singel-to-many/singel-to-many.component';
 
 const routes: Routes = [
-  { path: '', component: SingleRoomComponent },
+  { path: '', component: SingelToManyComponent },
   { path: 'private', component: PrivateChatComponent },
 
   // { path: 'register', component: RegisterComponent },
@@ -19,7 +20,8 @@ const routes: Routes = [
     PublicChatComponent,
     PrivateChatComponent,
     HomeComponent,
-    SingleRoomComponent
+    SingleRoomComponent,
+    SingelToManyComponent
   ],
   imports: [
     CommonModule,

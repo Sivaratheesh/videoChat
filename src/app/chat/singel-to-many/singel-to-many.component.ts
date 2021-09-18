@@ -4,11 +4,11 @@ import { ApiserviceService } from 'src/app/apiservice.service';
 import { SocketService } from 'src/app/socket.service';
 
 @Component({
-  selector: 'app-single-room',
-  templateUrl: './single-room.component.html',
-  styleUrls: ['./single-room.component.scss']
+  selector: 'app-singel-to-many',
+  templateUrl: './singel-to-many.component.html',
+  styleUrls: ['./singel-to-many.component.scss']
 })
-export class SingleRoomComponent implements OnInit {
+export class SingelToManyComponent implements OnInit {
 
   public users: any[] = []
   public IsMicEnable: boolean = true;
@@ -60,6 +60,7 @@ export class SingleRoomComponent implements OnInit {
   remoteRemote: any | null;
   localId: any | null;
   remoteId: any | null;
+  myId: any;
   constructor(private router: Router, private renderer: Renderer2, private socketService: SocketService, private apiservice: ApiserviceService) {
     this.remote = false;
     this.local = true;
@@ -97,10 +98,16 @@ export class SingleRoomComponent implements OnInit {
         this.localStream.getTracks().forEach((track: any) => {
           this.localConnection[id].peer.addTrack(track, this.localStream);
         });
-        this.remoteRemote.srcObject = this.remoteStream;
-        this.remoteVideo.srcObject = this.remoteStream;
-        this.remoteRemote.controls = false;
-        this.remoteVideo.controls = false;
+        this.remoteStream = new MediaStream();
+          const remoteVideo: any = document.getElementById("remote");
+        var v = document.createElement ("video");
+        v.srcObject = this.remoteStream;
+        v.controls = true;
+        v.autoplay = true;
+        v.playsInline = true;
+        v.loop =true;
+        v.muted = true;
+        remoteVideo.appendChild (v);
         this.localConnection[id].peer.addEventListener('track', async (event: any) => {
           this.remoteStream.addTrack(event.track, this.remoteStream);
         });
@@ -131,20 +138,21 @@ export class SingleRoomComponent implements OnInit {
     })
 
     this.socketService.webrtc_offers.subscribe(async (event: any) => {
-      if (!this.isRoomCreator && event) {
+      if (!this.isRoomCreator && event && !this.myId) {
         console.log("offer", event);
+        this.myId = event.id;
         let id = event.id
         this.localConnection = { [id]: { peer: await new RTCPeerConnection(this.iceServers) } };
         this.localStream.getTracks().forEach((track: any) => {
           this.localConnection[id].peer.addTrack(track, this.localStream);
         });
-        this.remoteRemote.srcObject = this.remoteStream;
-        this.remoteVideo.srcObject = this.remoteStream;
-        this.remoteRemote.controls = false;
-        this.remoteVideo.controls = false;
-        this.localConnection[id].peer.addEventListener('track', async (event: any) => {
-          this.remoteStream.addTrack(event.track, this.remoteStream);
-        });
+        // this.remoteRemote.srcObject = this.remoteStream;
+        // this.remoteVideo.srcObject = this.remoteStream;
+        // this.remoteRemote.controls = false;
+        // this.remoteVideo.controls = false;
+        // this.localConnection[id].peer.addEventListener('track', async (event: any) => {
+        //   this.remoteStream.addTrack(event.track, this.remoteStream);
+        // });
         this.localConnection[id].peer.onicecandidate = (event: any) => {
           if (event.candidate) {
             let data = {
@@ -162,7 +170,8 @@ export class SingleRoomComponent implements OnInit {
         let offerObj = {
           type: 'webrtc_answer',
           sdp: answer,
-          roomId: this.roomId
+          roomId: this.roomId,
+          id:id
 
         }
         await this.socketService.webrtc_answer(offerObj);
@@ -172,11 +181,11 @@ export class SingleRoomComponent implements OnInit {
     this.socketService.webrtc_answers.subscribe((event: any) => {
       let id = event.id
       console.log("answer", event);
-      if (event) {
+      if (event.id && !this.myId) {
         this.localConnection[id].peer.setRemoteDescription(new RTCSessionDescription(event.sdp));
 
       }
-      this.remoteId.style.display = "block"
+      // this.remoteId.style.display = "block"
 
     })
     this.socketService.webrtc_ice_candidates.subscribe((event: any) => {
@@ -191,10 +200,10 @@ export class SingleRoomComponent implements OnInit {
         this.localConnection[id].peer.addIceCandidate(candidate);
       }
     })
-    if(this.remoteId && this.localId){
-      this.localId.style.display = "none"
-      this.remoteId.style.display = "none"
-    }
+    // if(this.remoteId && this.localId){
+    //   this.localId.style.display = "none"
+    //   this.remoteId.style.display = "none"
+    // }
   }
   public async joinRoom() {
     if (this.roomId.length) {
@@ -203,17 +212,9 @@ export class SingleRoomComponent implements OnInit {
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       this.localVideo.controls = false;
       this.localVideo.muted = true;
-      this.remoteVideo.width = 200;
-      this.remoteVideo.height = 130;
       this.localVideo.srcObject = stream;
-      this.remoteLocal.srcObject = stream;
       this.localVideo.volume = 0;
       this.localStream = stream;
-      this.remoteLocal.controls = false;
-      this.remoteLocal.muted = true;
-      this.remoteLocal.width = 200;
-      this.remoteLocal.height = 130;
-      this.remoteLocal.volume = 0;
     }
   }
   public logOut() {
@@ -243,4 +244,5 @@ export class SingleRoomComponent implements OnInit {
     this.roomId='';
     this.ngOnInit();
   }
+
 }
