@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer2 } from '@angular/core';
+import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiserviceService } from 'src/app/apiservice.service';
 import { SocketService } from 'src/app/socket.service';
@@ -8,7 +8,7 @@ import { SocketService } from 'src/app/socket.service';
   templateUrl: './singel-to-many.component.html',
   styleUrls: ['./singel-to-many.component.scss']
 })
-export class SingelToManyComponent implements OnInit {
+export class SingelToManyComponent implements OnInit,OnDestroy {
 
   public users: any[] = []
   public IsMicEnable: boolean = true;
@@ -74,23 +74,23 @@ export class SingelToManyComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.localVideo = document.getElementById("localLocal");
+    
     if(sessionStorage.getItem('rtcCode')){
       this.roomId = sessionStorage.getItem('rtcCode')
-      this.joinRoom();
+      this.rtcConnection();
     }else{
       this.router.navigate(['app'])
     }
     
 
   }
+  ngOnDestroy(): void {
+    this.localStream.getTracks().forEach((track:any)=> {
+      track.stop();
+    });
+  }
   public rtcConnection(){
-    // this.localId = document.getElementById("localVideo")
-    // this.remoteId = document.getElementById("remoteVideo")
-    // this.localVideo = document.getElementById("localLocal");
-    // this.remoteVideo = document.getElementById("localRemote");
-    // this.remoteLocal = document.getElementById("remoteLocal");
-    this.remoteRemote = document.getElementById("remoteRemote");
+    this.localVideo = document.getElementById("localLocal");
     this.socketService.room_created.subscribe((even: any) => {
       console.log("room created", even);
       this.isRoomCreator = true
@@ -190,7 +190,6 @@ export class SingelToManyComponent implements OnInit {
         this.localConnection[id].peer.setRemoteDescription(new RTCSessionDescription(event.sdp));
 
       }
-      // this.remoteId.style.display = "block"
 
     })
     this.socketService.webrtc_ice_candidates.subscribe((event: any) => {
@@ -205,6 +204,7 @@ export class SingelToManyComponent implements OnInit {
         this.localConnection[id].peer.addIceCandidate(candidate);
       }
     })
+    this.joinRoom();
   }
   public async joinRoom() {
     if (this.roomId.length) {
@@ -218,7 +218,6 @@ export class SingelToManyComponent implements OnInit {
         this.localVideo.volume = 0;
         this.localStream = stream;
       }
-      this.rtcConnection();
     }
   }
   public logOut() {
@@ -228,25 +227,6 @@ export class SingelToManyComponent implements OnInit {
   }
   public onClick() {
     this.onTabClick = this.onTabClick === true ? false : true;
-  }
-  public show(value: any) {
-    if (value == 'local') {
-      this.localId.style.display = "block"
-      this.remoteId.style.display = "none"
-    } else if (value == 'remote') {
-      this.localId.style.display = "none"
-      this.remoteId.style.display = "block"
-
-    }
-
-  }
-  public hangUp() {
-    this.localConnection = null;
-    this.remoteConnection = null;
-    this.remoteStream = new MediaStream();
-    this.localStream = new MediaStream();
-    this.roomId = '';
-    this.ngOnInit();
   }
 
 }

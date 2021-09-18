@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer2 } from '@angular/core';
+import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiserviceService } from 'src/app/apiservice.service';
 import { SocketService } from 'src/app/socket.service';
@@ -8,7 +8,7 @@ import { SocketService } from 'src/app/socket.service';
   templateUrl: './single-room.component.html',
   styleUrls: ['./single-room.component.scss']
 })
-export class SingleRoomComponent implements OnInit {
+export class SingleRoomComponent implements OnInit , OnDestroy{
 
   public users: any[] = []
   public IsMicEnable: boolean = true;
@@ -72,24 +72,29 @@ export class SingleRoomComponent implements OnInit {
       this.router.navigate(['/'])
     }
   }
+  ngOnDestroy(): void {
+    this.localStream.getTracks().forEach((track:any)=> {
+      track.stop();
+    });
+  }
 
   ngOnInit(): void {
+   
+    if(sessionStorage.getItem('rtcCode')){
+      this.roomId = sessionStorage.getItem('rtcCode');
+      this.rtcConnection();
+    }else{
+      this.router.navigate(['app']);
+    }
+    
+  }
+  public rtcConnection(){
     this.localId =  document.getElementById("localVideo")
     this.remoteId  =  document.getElementById("remoteVideo")
     this.localVideo = document.getElementById("localLocal");
     this.remoteVideo = document.getElementById("localRemote");
     this.remoteLocal = document.getElementById("remoteLocal");
     this.remoteRemote = document.getElementById("remoteRemote");
-    if(sessionStorage.getItem('rtcCode')){
-      this.roomId = sessionStorage.getItem('rtcCode');
-      this.joinRoom();
-    }else{
-      this.router.navigate(['app'])
-    }
-    
-  }
-  public rtcConnection(){
-
     this.socketService.room_created.subscribe((even: any) => {
       console.log("room created", even);
       this.isRoomCreator = true
@@ -206,6 +211,7 @@ export class SingleRoomComponent implements OnInit {
       this.localId.style.display = "none"
       this.remoteId.style.display = "none"
     }
+    this.joinRoom();
   }
   public async joinRoom() {
     if (this.roomId.length) {
@@ -225,7 +231,6 @@ export class SingleRoomComponent implements OnInit {
       this.remoteLocal.width = 200;
       this.remoteLocal.height = 130;
       this.remoteLocal.volume = 0;
-      this.rtcConnection()
     }
   }
   public logOut() {
@@ -253,6 +258,6 @@ export class SingleRoomComponent implements OnInit {
     this.remoteStream= new MediaStream();
     this.localStream= new MediaStream();
     this.roomId='';
-    this.ngOnInit();
+    this.router.navigate(['app'])
   }
 }
