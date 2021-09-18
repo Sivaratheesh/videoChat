@@ -61,6 +61,7 @@ export class SingleRoomComponent implements OnInit {
   localId: any | null;
   remoteId: any | null;
   constructor(private router: Router, private renderer: Renderer2, private socketService: SocketService, private apiservice: ApiserviceService) {
+ 
     this.remote = false;
     this.local = true;
     if (this.apiservice.getLocalStorage('user')) {
@@ -79,8 +80,18 @@ export class SingleRoomComponent implements OnInit {
     this.remoteVideo = document.getElementById("localRemote");
     this.remoteLocal = document.getElementById("remoteLocal");
     this.remoteRemote = document.getElementById("remoteRemote");
+    if(sessionStorage.getItem('rtcCode')){
+      this.roomId = sessionStorage.getItem('rtcCode');
+      this.joinRoom();
+    }else{
+      this.router.navigate(['app'])
+    }
+    
+  }
+  public rtcConnection(){
+
     this.socketService.room_created.subscribe((even: any) => {
-      console.log("room done", even);
+      console.log("room created", even);
       this.isRoomCreator = true
     })
     this.socketService.room_joined.subscribe((even: any) => {
@@ -214,6 +225,7 @@ export class SingleRoomComponent implements OnInit {
       this.remoteLocal.width = 200;
       this.remoteLocal.height = 130;
       this.remoteLocal.volume = 0;
+      this.rtcConnection()
     }
   }
   public logOut() {

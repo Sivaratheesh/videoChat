@@ -7,10 +7,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SingleRoomComponent } from './single-room/single-room.component';
 import { SingelToManyComponent } from './singel-to-many/singel-to-many.component';
+import { DashboardComponent } from '../dashboard/dashboard.component';
 
 const routes: Routes = [
-  { path: '', component: SingelToManyComponent },
-  { path: 'private', component: PrivateChatComponent },
+  { path: '', component: DashboardComponent },
+  { path: 'one2one', component: SingleRoomComponent },
+  { path: 'many2one', component: SingelToManyComponent },
+
 
   // { path: 'register', component: RegisterComponent },
 ]

@@ -14,6 +14,7 @@ import { ErrorInterceptor } from './error-interceptor.service';
 import { environment } from 'src/environments/environment';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { SharedModule } from './shared/shared.module';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 const config: SocketIoConfig = { url:environment.socketUrl,options:{}};
 
@@ -23,7 +24,8 @@ const config: SocketIoConfig = { url:environment.socketUrl,options:{}};
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
+    HomeComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,

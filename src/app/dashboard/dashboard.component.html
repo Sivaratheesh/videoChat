@@ -27,36 +27,24 @@
 </div>
 
         <div class="row" style="margin: auto;">
-            <!-- <div class="c0l-sm-12 col-md-6 col-lg-6">
+            <div class="c0l-sm-12 col-md-6 col-lg-6">
                 <div class="call-layer join-call">
-                    <input placeholder=" Enter RTC code to join the call" class="code-input" type="text" [(ngModel)]="roomId">
+                <h2>One to one</h2>
+
+                    <input placeholder=" Enter RTC code to join the call" class="code-input" type="text" [(ngModel)]="singleRoomId">
                     <div class="join-btn">
-                        <button class="new-btn"  (click)="joinRoom()">Join</button>
+                        <button class="new-btn"  (click)="oneToOneRoom()">Join</button>
                     </div>
                 </div>
-            </div> -->
+            </div>
             <div class="c0l-sm-12 col-md-6 col-lg-6">
-                <div class="call-layer">
-                    <div id="localVideo" class="camera">
-                        <div>
-                            <video style="width: 100%;" id = "localLocal" controls playsinline autoplay loop > </video>
-                        </div>
-                    </div>
-                    <div id="remote"  class="camera">
-                        <!-- <div>
-                            <video style="width: 100%;"  id = "remoteRemote" controls playsinline autoplay loop ></video>       
-                        </div>
-                        <div class="video-layer">
-                            <video id = "remoteLocal" controls playsinline autoplay loop style="cursor: pointer;" (click)="show('local')" ></video>
-                            <img class="svg-mic" style="cursor: pointer;"  (click)="hangUp()" src="assets/end-call.png">
-                        </div>     -->
+                <div class="call-layer join-call">
+                <h2>Many to one</h2>
 
+                    <input placeholder=" Enter RTC code to join the call" class="code-input" type="text" [(ngModel)]="manyRoomId">
+                    <div class="join-btn">
+                        <button class="new-btn"  (click)="manyToOneRoom()">Join</button>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- <div class="camera">
-            <video id = "remote" controls playsinline autoplay loop muted="muted"></video>
-          </div> -->
-

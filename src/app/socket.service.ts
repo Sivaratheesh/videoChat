@@ -22,6 +22,7 @@ export class SocketService {
   public start_Call = this.socket.fromEvent<any>('start_call');
   public webrtc_offers = this.socket.fromEvent<any>('webrtc_offers');
   public webrtc_answers = this.socket.fromEvent<any>('webrtc_answers');
+  public webrtc_answers_sm = this.socket.fromEvent<any>('webrtc_answers_sm');
   public webrtc_ice_candidates = this.socket.fromEvent<any>('webrtc_ice_candidates');
 
 
@@ -88,6 +89,10 @@ export class SocketService {
   }
   webrtc_answer(data:any){
     this.socket.emit('webrtc_answer', data)
+
+  }
+  webrtc_answer_sm(data:any){
+    this.socket.emit('webrtc_answer_sm', data)
 
   }
 }
