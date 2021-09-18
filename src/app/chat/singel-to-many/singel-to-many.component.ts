@@ -104,7 +104,6 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
       this.remoteID= event;
       let id = event;
       if (this.isRoomCreator && id) {
-      this.localVideo.style.display = "none"
         this.localConnection = { [id]: { peer: await new RTCPeerConnection(this.iceServers) } };
         this.localStream.getTracks().forEach((track: any) => {
           this.localConnection[id].peer.addTrack(track, this.localStream);
@@ -181,8 +180,9 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
 
         }
         await this.socketService.webrtc_answer_sm(offerObj);
+      this.localVideo.style.display = "block"
       }
-      this.remoteId.style.display = "block"
+      // this.remoteId.style.display = "block"
     })
     this.socketService.webrtc_answers_sm.subscribe((event: any) => {
       let id = event.id
@@ -208,6 +208,7 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
   }
   public async joinRoom() {
     if (this.roomId.length) {
+      this.localVideo.style.display = "none"
       await this.socketService.createRoom(this.roomId);
       const constraints = { 'video': true, 'audio': { 'echoCancellation': true }, };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
