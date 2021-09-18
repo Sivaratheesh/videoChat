@@ -8,7 +8,7 @@ import { SocketService } from 'src/app/socket.service';
   templateUrl: './singel-to-many.component.html',
   styleUrls: ['./singel-to-many.component.scss']
 })
-export class SingelToManyComponent implements OnInit,OnDestroy {
+export class SingelToManyComponent implements OnInit, OnDestroy {
 
   public users: any[] = []
   public IsMicEnable: boolean = true;
@@ -72,22 +72,20 @@ export class SingelToManyComponent implements OnInit,OnDestroy {
   }
 
   ngOnInit(): void {
-    
-    if(sessionStorage.getItem('rtcCode')){
+
+    if (sessionStorage.getItem('rtcCode')) {
       this.roomId = sessionStorage.getItem('rtcCode')
       this.rtcConnection();
-    }else{
+    } else {
       this.router.navigate(['app'])
     }
-    
-
   }
   ngOnDestroy(): void {
-    this.localStream.getTracks().forEach((track:any)=> {
+    this.localStream.getTracks().forEach((track: any) => {
       track.stop();
     });
   }
-  public rtcConnection(){
+  public rtcConnection() {
     this.localVideo = document.getElementById("localLocal");
     this.socketService.room_created.subscribe((even: any) => {
       console.log("room created", even);
@@ -129,7 +127,6 @@ export class SingelToManyComponent implements OnInit,OnDestroy {
               id: id
             }
             this.socketService.webrtc_ice_candidate(data)
-
           }
         }
         const offer = await this.localConnection[id].peer.createOffer();
@@ -139,11 +136,9 @@ export class SingelToManyComponent implements OnInit,OnDestroy {
           sdp: offer,
           roomId: this.roomId,
           id: id
-
         }
         await this.socketService.webrtc_offer(offerObj);
       }
-
     })
 
     this.socketService.webrtc_offers.subscribe(async (event: any) => {
@@ -185,9 +180,7 @@ export class SingelToManyComponent implements OnInit,OnDestroy {
       console.log("answer", event);
       if (event.id && !this.myId) {
         this.localConnection[id].peer.setRemoteDescription(new RTCSessionDescription(event.sdp));
-
       }
-
     })
     this.socketService.webrtc_ice_candidates.subscribe((event: any) => {
       let id = event.id
@@ -201,18 +194,21 @@ export class SingelToManyComponent implements OnInit,OnDestroy {
         this.localConnection[id].peer.addIceCandidate(candidate);
       }
     })
-    this.joinRoom();
+    setTimeout(()=>{
+      this.joinRoom();
+
+    },5000)
   }
   public async joinRoom() {
     if (this.roomId.length) {
       await this.socketService.createRoom(this.roomId);
       const constraints = { 'video': true, 'audio': { 'echoCancellation': true }, };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        this.localVideo.controls = false;
-        this.localVideo.muted = true;
-        this.localVideo.srcObject = stream;
-        this.localVideo.volume = 0;
-        this.localStream = stream;
+      this.localVideo.controls = false;
+      this.localVideo.muted = true;
+      this.localVideo.srcObject = stream;
+      this.localVideo.volume = 0;
+      this.localStream = stream;
     }
   }
   public logOut() {
