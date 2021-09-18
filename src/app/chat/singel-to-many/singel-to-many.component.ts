@@ -181,7 +181,6 @@ export class SingelToManyComponent implements OnInit,OnDestroy {
         }
         await this.socketService.webrtc_answer_sm(offerObj);
       }
-      this.remoteId.style.display = "block"
     })
     this.socketService.webrtc_answers_sm.subscribe((event: any) => {
       let id = event.id

@@ -270,8 +270,8 @@ export class SingleRoomComponent implements OnInit , OnDestroy{
     this.remoteConnection = null;
     this.remoteStream= new MediaStream();
     this.localStream= new MediaStream();
-    this.roomId='';
     this.socketService.hangup(this.roomId);
+    this.roomId='';
     this.localStream.getTracks().forEach((track:any)=> {
       track.stop();
     });
