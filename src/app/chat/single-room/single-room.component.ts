@@ -236,6 +236,12 @@ export class SingleRoomComponent implements OnInit {
 
   }
   public hangUp() {
+    this.localConnection.close();
+    if (this.remoteConnection) {
+      this.remoteConnection.close();
+    }
+    this.localConnection = null;
+    this.remoteConnection = null;
     this.ngOnInit();
   }
 }
