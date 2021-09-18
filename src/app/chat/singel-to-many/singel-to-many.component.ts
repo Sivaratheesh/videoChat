@@ -1,7 +1,9 @@
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { ApiserviceService } from 'src/app/apiservice.service';
 import { SocketService } from 'src/app/socket.service';
+
 
 @Component({
   selector: 'app-singel-to-many',
@@ -61,7 +63,9 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
   localId: any | null;
   remoteId: any | null;
   myId: any;
-  constructor(private router: Router, private renderer: Renderer2, private socketService: SocketService, private apiservice: ApiserviceService) {
+  constructor(private router: Router, private renderer: Renderer2,
+     private socketService: SocketService, private apiservice: ApiserviceService,
+     private spinner: NgxSpinnerService) {
     this.remote = false;
     this.local = true;
     if (this.apiservice.getLocalStorage('user')) {
@@ -84,6 +88,7 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
     }else{
       this.router.navigate(['app']);
     }
+    this.spinner.show();
     this.localId =  document.getElementById("localVideo")
     this.remoteId  =  document.getElementById("remoteVideo")
     this.localVideo = document.getElementById("localLocal");
@@ -180,16 +185,18 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
 
         }
         await this.socketService.webrtc_answer_sm(offerObj);
-      this.localVideo.style.display = "block"
+      this.localVideo.style.display = "block";
+      this.spinner.hide();
+
       }
-      // this.remoteId.style.display = "block"
     })
     this.socketService.webrtc_answers_sm.subscribe((event: any) => {
       let id = event.id
       console.log("answer", event);
       if (event.id && !this.myId) {
         this.localConnection[id].peer.setRemoteDescription(new RTCSessionDescription(event.sdp));
-
+      this.spinner.hide();
+       
       }
     })
     this.socketService.webrtc_ice_candidates.subscribe((event: any) => {

@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { ApiserviceService } from 'src/app/apiservice.service';
 import { SocketService } from 'src/app/socket.service';
 
@@ -60,7 +61,11 @@ export class SingleRoomComponent implements OnInit , OnDestroy{
   remoteRemote: any | null;
   localId: any | null;
   remoteId: any | null;
-  constructor(private router: Router, private renderer: Renderer2, private socketService: SocketService, private apiservice: ApiserviceService) {
+  constructor(private router: Router,
+     private renderer: Renderer2,
+     private socketService: SocketService,
+      private apiservice: ApiserviceService,
+      private spinner: NgxSpinnerService) {
  
     this.remote = false;
     this.local = true;
@@ -89,6 +94,7 @@ export class SingleRoomComponent implements OnInit , OnDestroy{
     
   }
   public rtcConnection(){
+    this.spinner.show();
     this.localId =  document.getElementById("localVideo")
     this.remoteId  =  document.getElementById("remoteVideo")
     this.localVideo = document.getElementById("localLocal");
@@ -183,6 +189,7 @@ export class SingleRoomComponent implements OnInit , OnDestroy{
         }
         await this.socketService.webrtc_answer(offerObj);
       }
+      this.spinner.hide();
       this.remoteId.style.display = "block"
     })
     this.socketService.webrtc_answers.subscribe((event: any) => {
@@ -192,6 +199,7 @@ export class SingleRoomComponent implements OnInit , OnDestroy{
         this.localConnection[id].peer.setRemoteDescription(new RTCSessionDescription(event.sdp));
 
       }
+      this.spinner.hide();
       this.remoteId.style.display = "block"
 
     })
