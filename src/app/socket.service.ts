@@ -24,12 +24,7 @@ export class SocketService {
   public webrtc_answers = this.socket.fromEvent<any>('webrtc_answers');
   public webrtc_answers_sm = this.socket.fromEvent<any>('webrtc_answers_sm');
   public webrtc_ice_candidates = this.socket.fromEvent<any>('webrtc_ice_candidates');
-
-
-
-
-
-
+  public hanguped = this.socket.fromEvent<any>('hanguped');
 
   constructor(private socket: Socket) { }
 
@@ -91,8 +86,13 @@ export class SocketService {
     this.socket.emit('webrtc_answer', data)
 
   }
-  webrtc_answer_sm(data:any){
+
+    webrtc_answer_sm(data:any){
     this.socket.emit('webrtc_answer_sm', data)
+
+  }
+  hangup(data:any){
+    this.socket.emit('hangup', data)
 
   }
 }

@@ -211,6 +211,19 @@ export class SingleRoomComponent implements OnInit , OnDestroy{
       this.localId.style.display = "none"
       this.remoteId.style.display = "none"
     }
+    this.socketService.hanguped.subscribe(res =>{
+      if(this.roomId === res){
+        this.localConnection = null;
+        this.remoteConnection = null;
+        this.remoteStream= new MediaStream();
+        this.localStream= new MediaStream();
+        this.roomId='';
+        this.localStream.getTracks().forEach((track:any)=> {
+          track.stop();
+        });
+        this.router.navigate(['app'])
+      }
+    })
     this.joinRoom();
   }
   public async joinRoom() {
@@ -258,6 +271,10 @@ export class SingleRoomComponent implements OnInit , OnDestroy{
     this.remoteStream= new MediaStream();
     this.localStream= new MediaStream();
     this.roomId='';
+    this.socketService.hangup(this.roomId);
+    this.localStream.getTracks().forEach((track:any)=> {
+      track.stop();
+    });
     this.router.navigate(['app'])
   }
 }
