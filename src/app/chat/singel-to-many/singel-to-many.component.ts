@@ -87,8 +87,13 @@ export class SingelToManyComponent implements OnInit,OnDestroy {
       track.stop();
     });
   }
-  public rtcConnection(){
-    this.localVideo = document.getElementById("localLocal");
+  public async rtcConnection(){
+    this.localVideo = await document.getElementById("localLocal");
+    this.localId =  document.getElementById("localVideo")
+    this.remoteId  =  document.getElementById("remoteVideo")
+    this.remoteVideo = document.getElementById("localRemote");
+    this.remoteLocal = document.getElementById("remoteLocal");
+    this.remoteRemote = document.getElementById("remoteRemote");
     this.socketService.room_created.subscribe((even: any) => {
       console.log("room created", even);
       this.isRoomCreator = true
@@ -106,7 +111,7 @@ export class SingelToManyComponent implements OnInit,OnDestroy {
         this.localConnection = { [id]: { peer: await new RTCPeerConnection(this.iceServers) } };
         this.remoteStream = new MediaStream();
         const remoteVideo: any = document.getElementById("remote");
-        var v = document.createElement("video");
+        let v = document.createElement("video");
         v.srcObject = this.remoteStream;
         v.controls = false;
         v.autoplay = true;
