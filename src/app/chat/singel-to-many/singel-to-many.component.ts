@@ -155,7 +155,7 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
     })
 
     this.socketService.webrtc_offers.subscribe(async (event: any) => {
-      if (!this.isRoomCreator && event && !this.myId) {
+      if (!this.isRoomCreator && event) {
         console.log("offer", event);
         this.myId = event.id;
         let id = event.id
@@ -193,7 +193,7 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
     this.socketService.webrtc_answers_sm.subscribe((event: any) => {
       let id = event.id
       console.log("answer", event);
-      if (event.id && !this.myId) {
+      if (event.id ) {
         this.localConnection[id].peer.setRemoteDescription(new RTCSessionDescription(event.sdp));
       this.spinner.hide();
        
