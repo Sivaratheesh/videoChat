@@ -63,6 +63,7 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
   localId: any | null;
   remoteId: any | null;
   myId: any;
+  iceCandi: string = ''
   constructor(private router: Router, private renderer: Renderer2,
      private socketService: SocketService, private apiservice: ApiserviceService,
      private spinner: NgxSpinnerService) {
@@ -107,8 +108,8 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
     this.socketService.start_Call.subscribe(async (event: any) => {
       console.log("start", event);
       this.remoteID= event;
-      let id = event;
-      if (this.isRoomCreator && id) {
+      let id = event+this.socketService.socket.ioSocket.id
+      if (id ) {
         this.localConnection = { [id]: { peer: await new RTCPeerConnection(this.iceServers) } };
         this.localStream.getTracks().forEach((track: any) => {
           this.localConnection[id].peer.addTrack(track, this.localStream);
@@ -140,25 +141,36 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
 
           }
         }
-        const offer = await this.localConnection[id].peer.createOffer();
-        await this.localConnection[id].peer.setLocalDescription(offer);
-        let offerObj = {
-          type: 'webrtc_offer',
-          sdp: offer,
-          roomId: this.roomId,
-          id: id
+        this.localConnection[id].peer.createOffer().then((off:any)=>{
+          this.localConnection[id].peer.setLocalDescription(off).then(async (res:any)=>{
+            let offerObj = {
+              type: 'webrtc_offer',
+              sdp: off,
+              roomId: this.roomId,
+              id: id
+    
+            }
+            await this.socketService.webrtc_offer(offerObj);
+          })
+        });
+        // await this.localConnection[id].peer.setLocalDescription(offer);
+        // let offerObj = {
+        //   type: 'webrtc_offer',
+        //   sdp: offer,
+        //   roomId: this.roomId,
+        //   id: id
 
-        }
-        await this.socketService.webrtc_offer(offerObj);
+        // }
+        // await this.socketService.webrtc_offer(offerObj);
       }
 
     })
 
     this.socketService.webrtc_offers.subscribe(async (event: any) => {
-      if (!this.isRoomCreator && event && !this.myId) {
+      let id = event.id
+      if ( event ) {
         console.log("offer", event);
         this.myId = event.id;
-        let id = event.id
         this.localConnection = { [id]: { peer: await new RTCPeerConnection(this.iceServers) } };
         this.localStream.getTracks().forEach((track: any) => {
           this.localConnection[id].peer.addTrack(track, this.localStream);
@@ -175,25 +187,40 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
           }
         }
         await this.localConnection[id].peer.setRemoteDescription(new RTCSessionDescription(event.sdp));
-        const answer = await this.localConnection[id].peer.createAnswer();
-        await this.localConnection[id].peer.setLocalDescription(answer);
-        let offerObj = {
-          type: 'webrtc_answer',
-          sdp: answer,
-          roomId: this.roomId,
-          id:id
-
+        if(this.localConnection[id].peer){
+         this.localConnection[id].peer.createAnswer().then( (ans:any) =>{
+            this.localConnection[id].peer.setLocalDescription(ans).then( async (res:any)=>{
+              let offerObj = {
+                type: 'webrtc_answer',
+                sdp: ans,
+                roomId: this.roomId,
+                id:this.myId 
+              }
+              await this.socketService.webrtc_answer_sm(offerObj);
+            this.localVideo.style.display = "block";
+            this.spinner.hide();
+            })
+          });
+        //   await this.localConnection[id].peer.setLocalDescription(answer);
+        //   let offerObj = {
+        //     type: 'webrtc_answer',
+        //     sdp: answer,
+        //     roomId: this.roomId,
+        //     id:this.myId 
+        //   }
+        //   await this.socketService.webrtc_answer_sm(offerObj);
+        // this.localVideo.style.display = "block";
+        // this.spinner.hide();
         }
-        await this.socketService.webrtc_answer_sm(offerObj);
-      this.localVideo.style.display = "block";
-      this.spinner.hide();
+
 
       }
     })
     this.socketService.webrtc_answers_sm.subscribe((event: any) => {
       let id = event.id
       console.log("answer", event);
-      if (event.id && !this.myId) {
+      if (event.id && !this.myId && this.iceCandi !=  event.id) {
+        this.iceCandi = event.id
         this.localConnection[id].peer.setRemoteDescription(new RTCSessionDescription(event.sdp));
       this.spinner.hide();
        
@@ -201,13 +228,15 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
     })
     this.socketService.webrtc_ice_candidates.subscribe((event: any) => {
       let id = event.id
-      console.log("ice", event);
-      console.log("ice", this.localConnection[id]);
-      if (event.candidate && this.localConnection[id]) {
+   
+      if (event.candidate && this.localConnection[id]  && this.iceCandi !== id) {
+        this.iceCandi = id
         let candidate = new RTCIceCandidate({
           sdpMLineIndex: event.label,
           candidate: event.candidate,
         })
+        console.log("ice", event);
+        console.log("ice", this.localConnection[id]);
         this.localConnection[id].peer.addIceCandidate(candidate);
       }
     })

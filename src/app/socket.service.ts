@@ -21,14 +21,13 @@ export class SocketService {
   public room_joined = this.socket.fromEvent<any>('room_joined');
   public start_Call = this.socket.fromEvent<any>('start_call');
   public start_Call_mm = this.socket.fromEvent<any>('start_call_mm');
-
   public webrtc_offers = this.socket.fromEvent<any>('webrtc_offers');
   public webrtc_answers = this.socket.fromEvent<any>('webrtc_answers');
   public webrtc_answers_sm = this.socket.fromEvent<any>('webrtc_anssm');
   public webrtc_ice_candidates = this.socket.fromEvent<any>('webrtc_ice_candidates');
   public hanguped = this.socket.fromEvent<any>('hanguped');
 
-  constructor(private socket: Socket) { }
+  constructor(public socket: Socket) { }
 
   startListening() {
     let msg = "Hai"
