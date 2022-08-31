@@ -102,13 +102,13 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
     this.socketService.room_joined.subscribe((even: any) => {
       console.log('joined', even);
 
-      this.socketService.startCall_mm(this.roomId)
+      this.socketService.startCall(this.roomId)
     })
-    this.socketService.start_Call_mm.subscribe(async (event: any) => {
+    this.socketService.start_Call.subscribe(async (event: any) => {
       console.log("start", event);
       this.remoteID= event;
       let id = event;
-      if ( id) {
+      if (this.isRoomCreator && id) {
         this.localConnection = { [id]: { peer: await new RTCPeerConnection(this.iceServers) } };
         this.localStream.getTracks().forEach((track: any) => {
           this.localConnection[id].peer.addTrack(track, this.localStream);
@@ -155,7 +155,7 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
     })
 
     this.socketService.webrtc_offers.subscribe(async (event: any) => {
-      if (!this.isRoomCreator && event) {
+      if (!this.isRoomCreator && event && !this.myId) {
         console.log("offer", event);
         this.myId = event.id;
         let id = event.id
@@ -193,7 +193,7 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
     this.socketService.webrtc_answers_sm.subscribe((event: any) => {
       let id = event.id
       console.log("answer", event);
-      if (event.id ) {
+      if (event.id && !this.myId) {
         this.localConnection[id].peer.setRemoteDescription(new RTCSessionDescription(event.sdp));
       this.spinner.hide();
        
