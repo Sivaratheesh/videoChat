@@ -20,6 +20,8 @@ export class SocketService {
   public room_created = this.socket.fromEvent<any>('room_created');
   public room_joined = this.socket.fromEvent<any>('room_joined');
   public start_Call = this.socket.fromEvent<any>('start_call');
+  public start_Call_mm = this.socket.fromEvent<any>('start_call_mm');
+
   public webrtc_offers = this.socket.fromEvent<any>('webrtc_offers');
   public webrtc_answers = this.socket.fromEvent<any>('webrtc_answers');
   public webrtc_answers_sm = this.socket.fromEvent<any>('webrtc_anssm');
@@ -93,6 +95,10 @@ export class SocketService {
   }
   hangup(data:any){
     this.socket.emit('hangup', data)
+
+  }
+  startCall_mm(data:any){
+    this.socket.emit('start_calls_mm', data)
 
   }
 }

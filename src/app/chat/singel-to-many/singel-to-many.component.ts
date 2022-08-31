@@ -102,13 +102,13 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
     this.socketService.room_joined.subscribe((even: any) => {
       console.log('joined', even);
 
-      this.socketService.startCall(this.roomId)
+      this.socketService.startCall_mm(this.roomId)
     })
-    this.socketService.start_Call.subscribe(async (event: any) => {
+    this.socketService.start_Call_mm.subscribe(async (event: any) => {
       console.log("start", event);
       this.remoteID= event;
       let id = event;
-      if (this.isRoomCreator && id) {
+      if ( id) {
         this.localConnection = { [id]: { peer: await new RTCPeerConnection(this.iceServers) } };
         this.localStream.getTracks().forEach((track: any) => {
           this.localConnection[id].peer.addTrack(track, this.localStream);
