@@ -79,7 +79,7 @@
           "configurations": {
             "production": {
               "browserTarget": "webrtc:build:production",
-              "proxyConfig": "src/proxy.conf.json"
+              "proxyConfig": "./proxy.conf.json"
             },
             "development": {
               "browserTarget": "webrtc:build:development"

@@ -1,6 +1,6 @@
 {
     "/api": {
-      "target": "http://localhost:5000",
+      "target": "https://chatappapi3005.herokuapp.com",
       "secure": false,
       "changeOrigin": true,
       "pathRewrite": {
