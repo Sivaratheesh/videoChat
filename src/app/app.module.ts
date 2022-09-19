@@ -15,6 +15,8 @@ import { environment } from 'src/environments/environment';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { SharedModule } from './shared/shared.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { SpeechtotextComponent } from './speechtotext/speechtotext.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const config: SocketIoConfig = { url:environment.socketUrl,options:{}};
 
@@ -25,7 +27,8 @@ const config: SocketIoConfig = { url:environment.socketUrl,options:{}};
   declarations: [
     AppComponent,
     HomeComponent,
-    DashboardComponent
+    DashboardComponent,
+    SpeechtotextComponent
   ],
   imports: [
     BrowserModule,
@@ -34,6 +37,7 @@ const config: SocketIoConfig = { url:environment.socketUrl,options:{}};
     HttpClientModule,
     SharedModule,
     SocketIoModule.forRoot(config),
+    BrowserAnimationsModule
   ],
   providers: [VideoService,ApiserviceService],
   bootstrap: [AppComponent]

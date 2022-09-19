@@ -1,0 +1,34 @@
+
+  <div style="margin: 100px;">
+    <h1>Voice recognition</h1>
+    <button style="margin: 10px;" (click)="startService()">Start</button>
+    <button style="margin: 10px;" (click)="stopService()">Stop</button>
+    <button (click)="voice()" >Voice</button>
+    <button (click)="resume()" >Resume</button>
+    <button (click)="close()" >Stop Voice</button>
+    <button (click)="pause()" >Pause</button>
+    <select id="voices" class="form-select bg-secondary text-light"></select>
+    <textarea name="sample" id="" [(ngModel)]="service.text" cols="30" rows="10"></textarea>
+    <!-- <p>{{}}</p> -->
+</div>
+<div style="text-align: center;">
+  
+    <button id="start" class="start" (click)="recordStart()" [disabled]="isRecording">
+      Start Recording
+    
+    </button>
+  
+  
+    <button id="stop" class="stop" (click)="recordStop()" [disabled]="!isRecording">
+      Stop Recording
+    
+    </button>
+  
+    <button id="stop" (click)="downloadBlob()" *ngIf="hasVideo">
+      Download Recording
+    
+    </button>
+  
+    <video *ngIf="hasVideo" #recordVideo width="600" controls></video>
+  
+  </div>
