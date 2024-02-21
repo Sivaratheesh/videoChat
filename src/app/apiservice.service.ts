@@ -14,21 +14,21 @@ export class ApiserviceService {
   constructor(private http: HttpClient) { }
 
   insertUser(data: any) {
-    return this.http.post('https://chatappapi3005.herokuapp.com/user/register', data, this.jwt());
+    return this.http.post('https://chatapi-6apy.onrender.com/user/register', data, this.jwt());
     }
   getuser(data: any) {
 
-    return this.http.post('https://chatappapi3005.herokuapp.com/user/', data, this.jwt())
+    return this.http.post('https://chatapi-6apy.onrender.com/user/', data, this.jwt())
   }
 
   getAllOnlineuser(id: any) {
 
-    return this.http.get('https://chatappapi3005.herokuapp.com/user/onlineUsers/'+ id, this.jwt())
+    return this.http.get('https://chatapi-6apy.onrender.com/user/onlineUsers/'+ id, this.jwt())
   }
 
   logOutUser(data: any) {
 
-    return this.http.post('https://chatappapi3005.herokuapp.com/user/logOut', data, this.jwt())
+    return this.http.post('https://chatapi-6apy.onrender.com/user/logOut', data, this.jwt())
   }
   // intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
   //   const clonedRequest = req.clone({
