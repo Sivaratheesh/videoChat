@@ -108,9 +108,7 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
     this.socketService.start_Call.subscribe(async (event: any) => {
       console.log("start", event);
       // this.remoteID= event;
-      let id = event+this.socketService.socket.ioSocket.id;
-      // id = id.replaceAll(/\s/g,'')
-      console.log(id)
+      let id = event+this.socketService.socket.ioSocket.id
       if (id && this.localConnection.some(connection => connection[id] === id )) {
         this.localConnection.push ({ [id]: { peer: await new RTCPeerConnection(this.iceServers) }, id:id });
         let connection =  this.localConnection.find((con:any) => con.id === id)
@@ -176,7 +174,6 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
 
     this.socketService.webrtc_offers_mm.subscribe(async (event: any) => {
       let id = event.id
-      console.log(id)
       if ( event ) {
         console.log("offer", event);
         this.myId = event.id;
@@ -246,7 +243,6 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
     })
     this.socketService.webrtc_anssm_mm.subscribe((event: any) => {
       let id = event.id
-      console.log(id);
       const connection =  this.localConnection.find((con:any) => con.id === id)
 
       console.log("answer", event);
@@ -262,7 +258,6 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
     })
     this.socketService.webrtc_ice_candidates.subscribe((event: any) => {
       let id = event.id
-      console.log(id)
       const connection =  this.localConnection.find((con:any) => con.id === id)
    
       if (event.candidate && connection && connection[id]) {
