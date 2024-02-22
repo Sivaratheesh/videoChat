@@ -109,10 +109,10 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
       console.log("start", event);
       // this.remoteID= event;
       let id = event+this.socketService.socket.ioSocket.id
-      if (id ) {
+      if (id && this.localConnection.some(connection => connection[id] === id )) {
         this.localConnection.push ({ [id]: { peer: await new RTCPeerConnection(this.iceServers) }, id:id });
+        let connection =  this.localConnection.find((con:any) => con.id === id)
         this.localStream.getTracks().forEach((track: any) => {
-         const connection =  this.localConnection.find((con:any) => con.id === id)
          connection[id].peer.addTrack(track, this.localStream);
         });
         const remStream:any = new MediaStream();
@@ -127,7 +127,7 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
         v.width=200;
         v.height=300;
         remoteVideo.appendChild (v);
-        const connection =  this.localConnection.find((con:any) => con.id === id)
+        // const connection =  this.localConnection.find((con:any) => con.id === id)
 
         connection[id].peer.addEventListener('track', async (event: any) => {
           remStream.addTrack(event.track, remStream);
@@ -178,8 +178,8 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
         console.log("offer", event);
         this.myId = event.id;
         this.localConnection.push({[id]: { peer: await new RTCPeerConnection(this.iceServers) }, id:id } );
+        let connection =  this.localConnection.find((con:any) => con.id === id)
         this.localStream.getTracks().forEach((track: any) => {
-          const connection =  this.localConnection.find((con:any) => con.id === id)
           connection[id].peer.addTrack(track, this.localStream);
         });
        const remStream:any = new MediaStream();
@@ -194,7 +194,7 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
         v.width=200;
         v.height=300;
         remoteVideo.appendChild (v);
-        const connection =  this.localConnection.find((con:any) => con.id === id)
+        // const connection =  this.localConnection.find((con:any) => con.id === id)
 
         connection[id].peer.addEventListener('track', async (event: any) => {
           remStream.addTrack(event.track, remStream);
