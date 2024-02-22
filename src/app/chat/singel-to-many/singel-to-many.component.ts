@@ -108,7 +108,8 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
     this.socketService.start_Call.subscribe(async (event: any) => {
       console.log("start", event);
       // this.remoteID= event;
-      let id = event+this.socketService.socket.ioSocket.id
+      let id = event+this.socketService.socket.ioSocket.id;
+      id = id.replaceAll(/\s/g,'')
       console.log(id)
       if (id && this.localConnection.some(connection => connection[id] === id )) {
         this.localConnection.push ({ [id]: { peer: await new RTCPeerConnection(this.iceServers) }, id:id });
