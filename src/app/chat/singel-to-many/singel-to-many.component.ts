@@ -114,14 +114,14 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
       // id = id.replaceAll(/\s/g,'');le
       let newid = ''
       if (id) {
-        if(this.localConnection && this.localConnection.length && !this.localConnection.some(connection => connection[id] === id )){
+        // if(this.localConnection && this.localConnection.length && !this.localConnection.some(connection => connection[id] === id )){
+        //   this.localConnection.push ({ [id]: { peer: await new RTCPeerConnection(this.iceServers) }, id:id });
+        //   newid = id
+        // }else if (this.localConnection.length===0) {
+        //   newid = id
           this.localConnection.push ({ [id]: { peer: await new RTCPeerConnection(this.iceServers) }, id:id });
-          newid = id
-        }else if (this.localConnection.length===0) {
-          newid = id
-          this.localConnection.push ({ [id]: { peer: await new RTCPeerConnection(this.iceServers) }, id:id });
-        }
-        if(newid !== ''){
+        // }
+        // if(newid !== ''){
           let connection =  this.localConnection.find((con:any) => con.id === id)
           this.localStream.getTracks().forEach((track: any) => {
            connection[id].peer.addTrack(track, this.localStream);
@@ -170,7 +170,7 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
               await this.socketService.webrtc_offer_mm(offerObj);
             })
           });
-        }
+        // }
         // await this.localConnection[id].peer.setLocalDescription(offer);
         // let offerObj = {
         //   type: 'webrtc_offer',
