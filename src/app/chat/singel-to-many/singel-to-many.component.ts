@@ -111,9 +111,9 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
       let id = event+this.socketService.socket.ioSocket.id
       id = id.replaceAll(/\s/g,'');
       if (id) {
-        if(this.localConnection && this.localConnection.length && this.localConnection.some(connection => connection[id] !== id )){
+        if(this.localConnection && this.localConnection.length && !this.localConnection.some(connection => connection[id] === id )){
           this.localConnection.push ({ [id]: { peer: await new RTCPeerConnection(this.iceServers) }, id:id });
-        }else if (!this.localConnection.length) {
+        }else if (this.localConnection.length===0) {
           this.localConnection.push ({ [id]: { peer: await new RTCPeerConnection(this.iceServers) }, id:id });
         }
         let connection =  this.localConnection.find((con:any) => con.id === id)
@@ -182,9 +182,9 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
       if ( event ) {
         console.log("offer", event);
         this.myId = event.id;
-        if(this.localConnection && this.localConnection.length && this.localConnection.some(connection => connection[id] !== id )){
+        if(this.localConnection && this.localConnection.length && !this.localConnection.some(connection => connection[id] === id )){
           this.localConnection.push ({ [id]: { peer: await new RTCPeerConnection(this.iceServers) }, id:id });
-        }else if (!this.localConnection.length){
+        }else if (this.localConnection.length===0){
           this.localConnection.push ({ [id]: { peer: await new RTCPeerConnection(this.iceServers) }, id:id });
         }
         for(const remoteid of event.ids){
