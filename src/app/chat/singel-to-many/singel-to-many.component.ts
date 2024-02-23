@@ -108,7 +108,7 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
     this.socketService.start_Call.subscribe(async (event: any) => {
       console.log("start", event);
       // this.remoteID= event;
-      let id = this.roomId+this.socketService.socket.ioSocket.id
+      let id = this.socketService.socket.ioSocket.id
       // id = id.replaceAll(/\s/g,'');
       if (id) {
         if(this.localConnection && this.localConnection.length && !this.localConnection.some(connection => connection[id] === id )){
