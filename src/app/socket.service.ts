@@ -65,6 +65,10 @@ export class SocketService {
 
     this.socket.emit('createRoom', data);
   }
+  createRoom_mm(data: any) {
+
+    this.socket.emit('createRoom_mm', data);
+  }
   roomMessage(data: any) {
 
     this.socket.emit('roomMessage', data);
