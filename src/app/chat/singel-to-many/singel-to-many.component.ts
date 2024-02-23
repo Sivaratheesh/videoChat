@@ -295,7 +295,7 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
   public async joinRoom() {
     if (this.roomId.length) {
       this.localVideo.style.display = "none"
-      await this.socketService.createRoom({roomId:this.roomId,id:this.socketService.socket.ioSocket.id});
+      await this.socketService.createRoom_mm({roomId:this.roomId,id:this.socketService.socket.ioSocket.id});
       const constraints = { 'video': true, 'audio': { 'echoCancellation': true }, };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       if(stream){
