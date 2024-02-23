@@ -113,7 +113,7 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
       if (id) {
         if(this.localConnection && this.localConnection.length && this.localConnection.some(connection => connection[id] !== id )){
           this.localConnection.push ({ [id]: { peer: await new RTCPeerConnection(this.iceServers) }, id:id });
-        }else{
+        }else if (!this.localConnection.length) {
           this.localConnection.push ({ [id]: { peer: await new RTCPeerConnection(this.iceServers) }, id:id });
         }
         let connection =  this.localConnection.find((con:any) => con.id === id)
@@ -184,7 +184,7 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
         this.myId = event.id;
         if(this.localConnection && this.localConnection.length && this.localConnection.some(connection => connection[id] !== id )){
           this.localConnection.push ({ [id]: { peer: await new RTCPeerConnection(this.iceServers) }, id:id });
-        }else{
+        }else if (!this.localConnection.length){
           this.localConnection.push ({ [id]: { peer: await new RTCPeerConnection(this.iceServers) }, id:id });
         }
         for(const remoteid of event.ids){
