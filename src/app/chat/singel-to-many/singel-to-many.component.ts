@@ -65,8 +65,8 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
   myId: any;
   iceCandi: string = ''
   roomJoiniees: any = [];
-  roomJoinieesice: any = [];
-  peers:any = {};
+  public roomJoinieesice: any = [];
+  public peers:any = {};
   constructor(private router: Router, private renderer: Renderer2,
      private socketService: SocketService, private apiservice: ApiserviceService,
      private spinner: NgxSpinnerService) {
@@ -482,7 +482,7 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
     };
     peer.onicecandidate = async (event) => {
       if (event.candidate) {
-        await this.socketService.socket.emit('ice-candidate_MM', { target: userId,label: event.candidate.sdpMLineIndex,candidate: event.candidate.candidate, roomId:roomId });
+        await this.socketService.socket.emit('ice-candidate_MM', { target: userId,candidate: event.candidate, roomId:roomId });
       }
     };
 
@@ -500,8 +500,13 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
     } else {
       console.log("'else",isOfferer);
 
+
     }
+    
     this.peers[userId] = peer;
+    console.log("peers1",this.peers);
+
+
 
   
   }
@@ -529,7 +534,7 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
                 //             });        
       peer.onicecandidate = async (event) => {
         if (event.candidate) {
-          await this.socketService.socket.emit('ice-candidate_MM', { target, label: event.candidate.sdpMLineIndex,candidate: event.candidate.candidate, roomId:payload.payload});
+          await this.socketService.socket.emit('ice-candidate_MM', { target,candidate: event.candidate, roomId:payload.payload});
         }
       };
   
@@ -541,15 +546,16 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
       //   remoteVideo.autoplay = true;
       //   document.body.appendChild(remoteVideo);
       };
-       peer.setRemoteDescription(new RTCSessionDescription(offer));
+       peer.setRemoteDescription(new RTCSessionDescription(offer))
                 // if(this.localConnection[id].peer){
-                  peer.createAnswer().then( async (ans:any) =>{
-                    peer.setLocalDescription(ans).then( async (res:any)=>{
-                       this.socketService.socket.emit('answer_MM', { answer:ans, target ,roomId:payload.roomId , offerSender:payload.offerSender});
+                  .then(() => peer.createAnswer())
+                  .then(answer => peer.setLocalDescription(answer))
+                  .then(() => {
+                       this.socketService.socket.emit('answer_MM', { answer:peer.localDescription, target ,roomId:payload.roomId , offerSender:payload.offerSender});
                     this.localVideo.style.display = "block";
                     this.spinner.hide();
                     })
-                  });
+                  // });
       // peer.setRemoteDescription(new RTCSessionDescription(offer));
       //   // .then(() => 
       //   peer.createAnswer()
@@ -564,6 +570,8 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
       //   });
   
       this.peers[target] = peer;
+    console.log("peers2",this.peers);
+
     // }
    
   }
@@ -584,18 +592,22 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
   }
 
   async handleIceCandidate(candidate:any) {
+    this.peers[candidate.target].addIceCandidate(candidate.candidate)
+    .catch((error:any) => {
+      console.error('Error handling ICE candidate:', error);
+    });
     // if(candidate.target !== this.socketService.socket.ioSocket.id){
-      let candidates = await   new RTCIceCandidate({
-        sdpMLineIndex: candidate.label,
-        candidate: candidate.candidate,
-      })
-      console.log("this.peers",this.peers);
+//       let candidates = await   new RTCIceCandidate({
+//         sdpMLineIndex: candidate.label,
+//         candidate: candidate.candidate,
+//       })
+//       console.log("this.peers",this.peers);
       
-      // connection[remoteid].peer.addIceCandidate(candidate);
-await this.peers[candidate.target].addIceCandidate(candidates)
-.catch((error:any) => {
-console.error('Error handling ICE candidate:', error);
-});
+//       // connection[remoteid].peer.addIceCandidate(candidate);
+// await this.peers[candidate.target].addIceCandidate(candidates)
+// .catch((error:any) => {
+// console.error('Error handling ICE candidate:', error);
+// });
     // }
     
   }
