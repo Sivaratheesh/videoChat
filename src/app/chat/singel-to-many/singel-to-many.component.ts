@@ -376,7 +376,9 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
     this.remoteRemote = document.getElementById("remoteRemote");
     this.initLocalStream();
 
-    this.socketService.socket.on('userJoined_MM', (users: string[]) => {
+    this.socketService.socket.on('userJoined_MM', (users:any) => {
+      console.log("'userJoined_MM",users, "id",this.socketService.socket.ioSocket.id);
+      
       this.handleUserJoined(users);
     });
 
@@ -385,14 +387,18 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
     });
 
     this.socketService.socket.on('offer_MM', (payload:any) => {
+
       this.handleOffer(payload);
     });
 
     this.socketService.socket.on('answer_MM', (payload:any) => {
+
       this.handleAnswer(payload);
     });
 
     this.socketService.socket.on('ice-candidate_MM', (candidate:any) => {
+      console.log("'candidate_MM",candidate);
+
       this.handleIceCandidate(candidate);
     });
   }
@@ -421,9 +427,12 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
     //   });
   }
   }
-  handleUserJoined(users: string[]) {
-    users.forEach(async userId => {
-     await this.createPeerConnection(userId, true);
+  handleUserJoined(users: any) {
+    users.users.forEach(async (userId:any) => {
+      if(userId !== this.socketService.socket.ioSocket.id){
+        await this.createPeerConnection(userId, true,users.roomId);
+
+      }
     });
   }
 
@@ -434,7 +443,7 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
     });
   }
 
-   async createPeerConnection(userId: string, isOfferer: boolean) {
+   async createPeerConnection(userId: string, isOfferer: boolean, roomId: any) {
     // this.localConnection.push ({ [userId]: { peer: await new RTCPeerConnection(this.iceServers) }, id:id });
     const peer = await new RTCPeerConnection(this.iceServers);
  
@@ -465,101 +474,121 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
     //   remoteVideo.autoplay = true;
     //   document.body.appendChild(remoteVideo);
     // };
-    peer.onicecandidate = (event) => {
+    peer.onicecandidate = async (event) => {
       if (event.candidate) {
-        this.socketService.socket.emit('ice-candidate_MM', { target: userId,label: event.candidate.sdpMLineIndex,candidate: event.candidate.candidate });
+        await this.socketService.socket.emit('ice-candidate_MM', { target: userId,label: event.candidate.sdpMLineIndex,candidate: event.candidate.candidate, roomId:roomId });
       }
     };
 
-    // if (isOfferer) {
+    if (isOfferer) {
+      console.log("'isOfferer",isOfferer);
+
       peer.createOffer()
         .then(async offer => {
-         await peer.setLocalDescription(offer);
-          this.socketService.socket.emit('offer_MM', { offer, target: userId });
+          peer.setLocalDescription(offer);
+          this.socketService.socket.emit('offer_MM', { offer, target: userId , roomId:roomId, offerSender:this.socketService.socket.ioSocket.id});
         })
         .catch(error => {
           console.error('Error creating offer:', error);
         });
     // } else {
+      console.log("'else",isOfferer);
+
       this.peers[userId] = peer;
-    // }
+    }
+  
   }
 
   async handleOffer(payload:any) {
-    const { offer, target } = payload;
-    const peer = await new RTCPeerConnection(this.iceServers);
-    const remStream:any = new MediaStream();
-                const remoteVideo: any = document.getElementById("remote");
-              var v = document.createElement ("video");
-              v.srcObject = remStream;
-              v.controls = false;
-              v.autoplay = true;
-              v.playsInline = true;
-              v.loop =true;
-              v.muted = true;
-              v.width=200;
-              v.height=300;
-              remoteVideo.appendChild (v);
-              peer.addEventListener('track', async (event: any) => {
-                            remStream.addTrack(event.track, remStream);
-                          });        
-    peer.onicecandidate = async (event) => {
-      if (event.candidate) {
-        await this.socketService.socket.emit('ice-candidate_MM', { target, label: event.candidate.sdpMLineIndex,candidate: event.candidate.candidate  });
-      }
-    };
+    // if(payload.target !== this.socketService.socket.ioSocket.id){
+      console.log("'handleOffer",payload) ;
 
-    // peer.ontrack = (event) => {
-    //   const remoteVideo = document.createElement('video');
-    //   remoteVideo.srcObject = event.streams[0];
-    //   remoteVideo.autoplay = true;
-    //   document.body.appendChild(remoteVideo);
-    // };
-    await peer.setRemoteDescription(new RTCSessionDescription(offer));
-              // if(this.localConnection[id].peer){
-                peer.createAnswer().then( async (ans:any) =>{
-                 await peer.setLocalDescription(ans).then( async (res:any)=>{
-                  await this.socketService.socket.emit('answer_MM', { answer:ans, target });
-                  this.localVideo.style.display = "block";
-                  this.spinner.hide();
-                  })
-                });
-    // peer.setRemoteDescription(new RTCSessionDescription(offer));
-    //   // .then(() => 
-    //   peer.createAnswer()
-    //   .then(ans => peer.setLocalDescription(ans))
-    //   .then((res) => {
-    //     this.socketService.socket.emit('answer_MM', { answer:ans, target });
-    //     this.localVideo.style.display = "block";
-    //                   this.spinner.hide();
-    //   })
-    //   .catch(error => {
-    //     console.error('Error handling offer:', error);
-    //   });
-
-    this.peers[target] = peer;
+      const { offer, target } = payload;
+      const peer = await new RTCPeerConnection(this.iceServers);
+      const remStream:any = new MediaStream();
+                  const remoteVideo: any = document.getElementById("remote");
+                var v = document.createElement ("video");
+                v.srcObject = remStream;
+                v.controls = false;
+                v.autoplay = true;
+                v.playsInline = true;
+                v.loop =true;
+                v.muted = true;
+                v.width=200;
+                v.height=300;
+                remoteVideo.appendChild (v);
+                peer.addEventListener('track', async (event: any) => {
+                              remStream.addTrack(event.track, remStream);
+                            });        
+      peer.onicecandidate = async (event) => {
+        if (event.candidate) {
+          await this.socketService.socket.emit('ice-candidate_MM', { target, label: event.candidate.sdpMLineIndex,candidate: event.candidate.candidate, roomId:payload.payload});
+        }
+      };
+  
+      // peer.ontrack = (event) => {
+      //   const remoteVideo = document.createElement('video');
+      //   remoteVideo.srcObject = event.streams[0];
+      //   remoteVideo.autoplay = true;
+      //   document.body.appendChild(remoteVideo);
+      // };
+       peer.setRemoteDescription(new RTCSessionDescription(offer));
+                // if(this.localConnection[id].peer){
+                  peer.createAnswer().then( async (ans:any) =>{
+                    peer.setLocalDescription(ans).then( async (res:any)=>{
+                       this.socketService.socket.emit('answer_MM', { answer:ans, target ,roomId:payload.roomId , offerSender:payload.offerSender});
+                    this.localVideo.style.display = "block";
+                    this.spinner.hide();
+                    })
+                  });
+      // peer.setRemoteDescription(new RTCSessionDescription(offer));
+      //   // .then(() => 
+      //   peer.createAnswer()
+      //   .then(ans => peer.setLocalDescription(ans))
+      //   .then((res) => {
+      //     this.socketService.socket.emit('answer_MM', { answer:ans, target });
+      //     this.localVideo.style.display = "block";
+      //                   this.spinner.hide();
+      //   })
+      //   .catch(error => {
+      //     console.error('Error handling offer:', error);
+      //   });
+  
+      this.peers[target] = peer;
+    // }
+   
   }
 
   async handleAnswer(payload:any) {
-    const { answer, target } = payload;
-    this.peers[target].setRemoteDescription(await new RTCSessionDescription(answer))
-      .catch((error:any) => {
-        console.error('Error handling answer:', error);
-      });
-      this.localVideo.style.display = "block";
-              this.spinner.hide();
+    if(payload.target !== this.socketService.socket.ioSocket.id){
+      console.log("'handleAnswer",payload);
+
+      const { answer, target } = payload;
+      await this.peers[target].setRemoteDescription( new RTCSessionDescription(answer))
+         .catch((error:any) => {
+           console.error('Error handling answer:', error);
+         });
+         this.localVideo.style.display = "block";
+                 this.spinner.hide();
+    }
+   
   }
 
   async handleIceCandidate(candidate:any) {
-    let candidates = new RTCIceCandidate({
-                sdpMLineIndex: candidate.label,
-                candidate: candidate.candidate,
-              })
-              // connection[remoteid].peer.addIceCandidate(candidate);
-    await this.peers[candidate.target].addIceCandidate(candidates)
-      .catch((error:any) => {
-        console.error('Error handling ICE candidate:', error);
-      });
+    if(candidate.target !== this.socketService.socket.ioSocket.id){
+      let candidates = await   new RTCIceCandidate({
+        sdpMLineIndex: candidate.label,
+        candidate: candidate.candidate,
+      })
+      console.log("this.peers",this.peers);
+      
+      // connection[remoteid].peer.addIceCandidate(candidate);
+await this.peers[candidate.target].addIceCandidate(candidates)
+.catch((error:any) => {
+console.error('Error handling ICE candidate:', error);
+});
+    }
+    
   }
 
 }
