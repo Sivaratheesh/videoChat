@@ -363,7 +363,7 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
     // this.roomId = uuidv4();
         if(sessionStorage.getItem('rtcCode')){
       this.roomId = sessionStorage.getItem('rtcCode');
-     await this.socketService.socket.emit('joinRoom_MM',this.roomId)
+      // this.initLocalStream()
     }else{
       this.router.navigate(['app']);
     }
@@ -404,8 +404,9 @@ export class SingelToManyComponent implements OnInit, OnDestroy {
   }
 
   async initLocalStream() {
-    if (this.roomId.length) {
-          this.localVideo.style.display = "none"
+    if (this.roomId && this.roomId.length) {
+          this.localVideo.style.display = "none";
+     await this.socketService.socket.emit('joinRoom_MM',this.roomId);
           // await this.socketService.createRoom_mm({roomId:this.roomId,id:this.socketService.socket.ioSocket.id});
           const constraints = { 'video': true, 'audio': { 'echoCancellation': true }, };
           const stream = await navigator.mediaDevices.getUserMedia(constraints);
