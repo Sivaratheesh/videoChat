@@ -38,7 +38,7 @@ export class DashboardComponent implements OnInit {
   public manyToOneRoom(){
     if(this.manyRoomId && this.manyRoomId.length >= 3){
       sessionStorage.setItem('rtcCode',this.manyRoomId);
-      this.router.navigate(['app/many2one'])
+      this.router.navigate(['app/m2m'])
           }
   }
   public logOut() {
